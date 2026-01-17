@@ -6,15 +6,17 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:08 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/17 20:42:40 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/01/17 21:02:43 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../includes/philo.h"
 
 int main(int ac, char **av)
 {
-  
+    (void)ac;
+    (void)av;
+    return (0);
     
     
     

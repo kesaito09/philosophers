@@ -6,7 +6,7 @@
 #    By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/17 20:39:44 by kesaitou          #+#    #+#              #
-#    Updated: 2026/01/17 20:40:53 by kesaitou         ###   ########.fr        #
+#    Updated: 2026/01/17 21:01:37 by kesaitou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = philo
 CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
-MAND_SRCS = philo.c\
+MAND_SRCS = srcs/philo.c\
 
 
 MAND_OBJS = $(MAND_SRCS:.c=.o)
