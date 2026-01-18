@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/18 19:59:40 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/01/18 21:29:40 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define SUCESS 1
+#define SUCCESS 1
 #define FAILUER -1
 
 
@@ -41,10 +41,11 @@ typedef struct s_philo
 {
     int				id;
     int				eat_count;
-    int				last_eat;
+    long			time_last_eat;
     pthread_t		thread;
     pthread_mutex_t	*left_fork;
     pthread_mutex_t	*right_fork;
+    pthread_mutex_t last_eat_lock;
     t_info			*info;
 
 }   t_philo;

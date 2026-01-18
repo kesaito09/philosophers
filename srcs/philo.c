@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:08 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/18 20:30:39 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/01/18 21:40:51 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ pthread_mutex_t	*init_forks(int n)
 	return (forks);
 }
 
-int init_mutex(t_info *info, int n)
+int init_tinfo_mutex(t_info *info, int n)
 {
 	info->forks = init_forks(n);
 	if (!info->forks)
@@ -39,7 +39,7 @@ int init_mutex(t_info *info, int n)
 		return (FAILUER);
 	if (pthread_mutex_init(&info->write_lock, NULL) != 0)
 		return (FAILUER);
-	return (SUCESS);	
+	return (SUCCESS);
 }
 
 t_info	*init_tinfo(int ac, char **av)
@@ -60,23 +60,51 @@ t_info	*init_tinfo(int ac, char **av)
 		info->num_must_eat = ft_atoi(av[5]);
 	else
 		info ->num_must_eat = -1;
-	if (init_mutex(info, n) == FAILUER)
+	if (init_tinfo_mutex(info, n) == FAILUER)
 		return ( NULL);
 	return (info);
+}
+
+
+
+t_philo	*init_philo(t_info *info)
+{
+	t_philo	*philo;
+	int		i;
+
+	i = 0;
+	philo = ft_calloc(sizeof(t_philo), info->num_of_philo);
+	if (!philo)
+		return (NULL);
+	while (i < info->num_of_philo)
+	{
+		philo[i].id = i + 1;
+		philo[i].eat_count = 0;
+		philo[i].info = info;
+		philo[i].left_fork = &info->forks[i];
+		philo[i].right_fork = &info->forks[(i + 1) % info->num_of_philo];
+		if (pthread_mutex_init(&philo[i].last_eat_lock, NULL) == FAILUER)
+			return (NULL);
+		i++;
+	}
+	return (philo);
 }
 
 
 int main(int ac, char **av)
 {
     t_info	*info;
+	t_philo	*philo;
 
 	if (ac != 5 && ac != 6)
 		return (1);
 	info = init_tinfo(ac, av);
 	if (!info)
 		return (1);
-	
-    
+	philo = init_philo(info);
+    if (!philo)
+		return (1);
+		
     
     
     
