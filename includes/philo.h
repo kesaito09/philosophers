@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/18 21:29:40 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/01/18 23:08:51 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <sys/time.h>
+#include <stdbool.h>
 
 #define SUCCESS 1
 #define FAILUER -1
-
 
 typedef struct s_info
 {
@@ -51,13 +52,20 @@ typedef struct s_philo
 }   t_philo;
 
 
+/*philo_setup_*/
+t_info	*init_tinfo(int ac, char **av);
+t_philo	*init_philo(t_info *info);
 
 
 
 
 
 
-/*philo_utils*/
+/*philo_utils1_lib*/
 int	    ft_atoi(const char *nptr);
 void	*ft_calloc(size_t nmemb, size_t size);
+
+/*philo_utils2_*/
+long	get_time_now(void);
+bool    is_dead(t_info *info);
 
