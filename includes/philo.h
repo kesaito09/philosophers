@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/18 23:08:51 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/01/19 08:18:37 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,14 @@ typedef struct s_philo
 
 }   t_philo;
 
+typedef enum e_state
+{
+    TAKE,
+    EAT,
+    SLEEP,
+    THINK,
+    DIE,
+}t_state;
 
 /*philo_setup_*/
 t_info	*init_tinfo(int ac, char **av);
@@ -68,4 +76,5 @@ void	*ft_calloc(size_t nmemb, size_t size);
 /*philo_utils2_*/
 long	get_time_now(void);
 bool    is_dead(t_info *info);
+int	print_log(t_philo *philo, t_state state);
 

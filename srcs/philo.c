@@ -6,14 +6,28 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:08 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/18 22:52:34 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/01/19 08:24:26 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
+int	routine()
+{
+	
+	
+	
+	
+	
+}
 
+int control_thread()
+{
 
+	
+	
+	
+}
 
 int main(int ac, char **av)
 {
@@ -33,3 +47,4 @@ int main(int ac, char **av)
     
     
 }
+
