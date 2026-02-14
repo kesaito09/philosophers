@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/14 15:50:22 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/14 17:15:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_info
     long            time_to_sleep;
     long            num_must_eat;
     long            start_time;
+	int				is_dead;
     pthread_mutex_t dead_flag;
     pthread_mutex_t write_flag;
     pthread_mutex_t *forks;
@@ -46,7 +47,7 @@ typedef struct s_philo
     pthread_mutex_t	*left_fork;
     pthread_mutex_t	*right_fork;
     pthread_mutex_t last_eat_lock;
-    t_info			*info;
+    t_info			info;
 
 }   t_philo;
 
