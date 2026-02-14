@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/19 08:18:37 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/14 15:50:22 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,8 @@ typedef struct s_info
     long            time_to_sleep;
     long            num_must_eat;
     long            start_time;
-    int             dead_flag;
-    pthread_mutex_t dead_lock;
-    pthread_mutex_t write_lock;
+    pthread_mutex_t dead_flag;
+    pthread_mutex_t write_flag;
     pthread_mutex_t *forks;
     
 }   t_info;
@@ -61,7 +60,7 @@ typedef enum e_state
 }t_state;
 
 /*philo_setup_*/
-t_info	*init_tinfo(int ac, char **av);
+t_info	*init_info(int ac, char **av);
 t_philo	*init_philo(t_info *info);
 
 

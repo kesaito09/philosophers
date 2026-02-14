@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:23:40 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/18 22:31:51 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/14 16:06:06 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ pthread_mutex_t	*init_forks(int n)
 	int				i;
 
 	i = 0;
-	forks = ft_calloc(sizeof(pthread_mutex_t) , n + 1);
+	forks = ft_calloc(sizeof(pthread_mutex_t) , n);
 	if (!forks)
 		return (NULL);
 	while (i < n)
@@ -35,14 +35,14 @@ int init_tinfo_mutex(t_info *info, int n)
 	info->forks = init_forks(n);
 	if (!info->forks)
 		return (free(info), FAILUER);
-	if (pthread_mutex_init(&info->dead_lock, NULL) != 0)
+	if (pthread_mutex_init(&info->dead_flag, NULL) != 0)
 		return (FAILUER);
-	if (pthread_mutex_init(&info->write_lock, NULL) != 0)
+	if (pthread_mutex_init(&info->write_flag, NULL) != 0)
 		return (FAILUER);
 	return (SUCCESS);
 }
 
-t_info	*init_tinfo(int ac, char **av)
+t_info	*init_info(int ac, char **av)
 {
 	t_info	*info;
 	int		n;

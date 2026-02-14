@@ -6,28 +6,14 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:08 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/01/19 08:24:26 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/14 15:45:31 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-int	routine()
-{
-	
-	
-	
-	
-	
-}
 
-int control_thread()
-{
 
-	
-	
-	
-}
 
 int main(int ac, char **av)
 {
@@ -36,7 +22,7 @@ int main(int ac, char **av)
 
 	if (ac != 5 && ac != 6)
 		return (1);
-	info = init_tinfo(ac, av);
+	info = init_info(ac, av);
 	if (!info)
 		return (1);
 	philo = init_philo(info);
@@ -47,4 +33,14 @@ int main(int ac, char **av)
     
     
 }
+
+
+/*
+	int main()
+	{
+		setup();
+		simulate()
+		destroy()
+	}
+*/
 
