@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 05:39:40 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 07:58:47 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,11 @@ t_info	*init_info(int ac, char **av);
 t_philo	*init_philo(t_info *info);
 pthread_mutex_t	*init_forks(int n);
 
-int	initializer(int ac, char **av);
+int	initializer(int ac, char **av, t_philo *philos, t_info *info);
+int	monitering(t_philo *philos, t_info *info);
+void	*philo_routine(void *arg);
+int	start_simulation(t_philo *philos, t_info *info);
+
 
 
 

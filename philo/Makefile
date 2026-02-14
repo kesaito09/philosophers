@@ -6,7 +6,7 @@
 #    By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/01/17 20:39:44 by kesaitou          #+#    #+#              #
-#    Updated: 2026/02/14 22:55:10 by kesaitou         ###   ########.fr        #
+#    Updated: 2026/02/15 08:09:15 by kesaitou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,11 +18,12 @@ MAND_SRCS = \
 			interface/main.c\
 			application/initializer.c\
 			application/simulation.c\
+			application/monitor.c\
 			domain/actions.c\
 			infrastructure/logger.c\
-			infrastructure/philo_utils1_lib.c\
-			infrastructure/philo_utils2_lib.c\
-			tests/test_main.c\
+			infrastructure/lib.c\
+			infrastructure/utils.c\
+		
 
 
 MAND_OBJS = $(MAND_SRCS:.c=.o)

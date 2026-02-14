@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/14 19:55:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 05:41:07 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 07:58:21 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,16 +88,13 @@ t_philo	*init_philo(t_info *info)
 	return (philo);
 }
 
-int	initializer(int ac, char **av)
+int	initializer(int ac, char **av, t_philo *philos, t_info *info)
 {
-	t_info	*info;
-	t_philo *philo;
-
 	info = init_info(ac, av);
 	if (!info)
 		return (FAILUER);
-	philo = init_philo(info);
-    if (!philo)
+	philos = init_philo(info);
+    if (!philos)
 		return (FAILUER);
 	info->start_time = get_time_now();
 	return (SUCCESS);

@@ -6,13 +6,13 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/15 05:27:16 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 07:13:58 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 08:10:37 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-bool	is_philo_dead(t_info *info, t_philo *philo)
+bool	is_philo_dead(t_philo *philo, t_info *info)
 {
 	long	last_time;
 
@@ -24,27 +24,26 @@ bool	is_philo_dead(t_info *info, t_philo *philo)
 	return (false);
 }
 
-void	stop_simulation(t_info *info, t_philo *philo)
+void	stop_simulation(t_philo *philo, t_info *info)
 {
 	pthread_mutex_lock(&info->write_lock);
 	pthread_mutex_lock(&info->state_lock);
 	info->is_stop_sim = 1;
 	pthread_mutex_unlock(&info->state_lock);
-	printf("%ld %d died\n",get_time_now(), philo->id);
+	printf("%ld %d died\n",get_time_now() - info->start_time, philo->id);
 	pthread_mutex_unlock(&info->write_lock);
 }
 
-int check_all_philosophers(t_info *info, t_philo *philo)
+int check_all_philosophers(t_philo *philos, t_info *info)
 {
 	int		i;
-	long	last_time;
 
 	i = 0;
 	while (i < info->num_of_philo)
 	{
-		if (is_philo_dead(&philo[i], info))
+		if (is_philo_dead(&philos[i], info))
 		{
-			stop_simulation(info, &philo[i]);
+			stop_simulation(&philos[i], info);
 			return (1);
 		}
 		i++;
@@ -52,19 +51,15 @@ int check_all_philosophers(t_info *info, t_philo *philo)
 	return (0);
 }
 
-int	philo_daemon(t_info *info, t_philo *philo)
+int	monitering(t_philo *philos, t_info *info)
 {
-	while (!check_all_philosophers(info, philo))
+	while (1)
 	{
-		
-		
-		
+		if (check_all_philosophers(philos, info) == 1)
+			return (1);
+		usleep(1000);
 	}
-	
-	
-	
-	
-	
+	return (0);
 }
 
 /*

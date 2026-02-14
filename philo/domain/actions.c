@@ -6,11 +6,22 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/14 17:08:27 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 05:34:15 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 08:08:39 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+
+
+bool	is_simulation_finished(t_philo *philo)
+{
+	bool	flag;
+
+	pthread_mutex_lock(&philo->info.state_lock);
+	flag = philo->info.is_stop_sim;
+	pthread_mutex_unlock(&philo->info.state_lock);
+	return (flag);
+}
 
 void	take_forks(t_philo *philo)
 {
@@ -33,25 +44,26 @@ void	back_forks(t_philo *philo)
 	pthread_mutex_unlock(philo->right_fork);
 }
 
-void	*philo_eat(t_philo *philo)
+void	philo_eat(t_philo *philo)
 {
 	take_forks(philo);
 	pthread_mutex_lock(&philo->last_eat_lock);
 	philo->time_last_eat = get_time_now();
-	pthread_mutex_unlock(&philo->time_last_eat);
+	pthread_mutex_unlock(&philo->last_eat_lock);
 	logger(philo, EAT);
 	usleep(philo->info.time_to_eat * 1000);
-	back_table_forks(philo);
+	back_forks(philo);
 	philo->eat_count++;
+
 }
 
-void	*philo_sleep(t_philo *philo)
+void	philo_sleep(t_philo *philo)
 {
 	logger(philo, SLEEP);
 	usleep(philo->info.time_to_sleep * 1000);
 }
 
-void	*philo_think(t_philo *philo)
+void	philo_think(t_philo *philo)
 {
 	logger(philo, THINK);
 }

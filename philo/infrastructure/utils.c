@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time_utils.c                                       :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 19:08:42 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 03:22:03 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 08:08:45 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,16 @@ long	get_time_now(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int main(void)
-{
-	long	time;
 
-	time = get_time_now();
-	printf("%ld\n",get_time_now() - time);
-	usleep(5000);
-	printf("%ld\n",get_time_now() - time);
-}
+
+// int main(void)
+// {
+// 	long	time;
+
+// 	time = get_time_now();
+// 	printf("%ld\n",get_time_now() - time);
+// 	usleep(5000);
+// 	printf("%ld\n",get_time_now() - time);
+// }
 
 

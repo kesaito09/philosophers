@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:08 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 05:47:46 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 08:01:40 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,16 @@
 int main(int ac, char **av)
 {
     t_info	info;
+	t_philo	*philos;
 
 	if (ac != 5 && ac != 6)
 		return (1);
-	if (initializer(ac, av) == FAILUER)
+	philos = NULL;
+	if (initializer(ac, av, philos, &info) == FAILUER)
 		return (1);
-    
-    
-    
+    if (start_simulation(philos, &info) == FAILUER)
+		return (1);
+	return (0);
 }
 
 
