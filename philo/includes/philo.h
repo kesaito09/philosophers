@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 20:41:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 01:53:07 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 05:39:40 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ typedef struct s_info
     long            time_to_sleep;
     long            num_must_eat;
     long            start_time;
-	int				is_dead;
-    pthread_mutex_t dead_flag;
-    pthread_mutex_t write_flag;
+	bool			is_stop_sim;
+	pthread_mutex_t	state_lock;
+    pthread_mutex_t write_lock;
     pthread_mutex_t *forks;
     
 }   t_info;
@@ -66,6 +66,7 @@ t_info	*init_info(int ac, char **av);
 t_philo	*init_philo(t_info *info);
 pthread_mutex_t	*init_forks(int n);
 
+int	initializer(int ac, char **av);
 
 
 
@@ -77,6 +78,6 @@ void	*ft_calloc(size_t nmemb, size_t size);
 
 /*philo_utils2_*/
 long	get_time_now(void);
-bool    is_dead(t_philo *philo);
+bool	is_simulation_finished(t_philo *philo);
 int		logger(t_philo *philo, t_state state);
 

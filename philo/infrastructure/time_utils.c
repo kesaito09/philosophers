@@ -1,27 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils2_lib.c                                 :+:      :+:    :+:   */
+/*   time_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 19:08:42 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 02:11:30 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 03:22:03 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-/*死亡フラグを確認しにいく関数*/
-bool is_dead(t_philo *philo)
-{
-	bool	flag;
-
-	pthread_mutex_lock(&philo->info.dead_flag);
-	flag = philo->info.is_dead;
-	pthread_mutex_unlock(&philo->info.dead_flag);
-	return (flag);
-}
 
 long	get_time_now(void)
 {

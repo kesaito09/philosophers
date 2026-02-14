@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/14 19:55:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 00:54:06 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 05:41:07 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,14 @@ pthread_mutex_t	*init_forks(int n)
 	return (forks);
 }
 
-int init_tinfo_mutex(t_info *info, int n)
+int init_info_mutex(t_info *info, int n)
 {
 	info->forks = init_forks(n);
 	if (!info->forks)
 		return (free(info), FAILUER);
-	if (pthread_mutex_init(&info->dead_flag, NULL) != 0)
+	if (pthread_mutex_init(&info->state_lock, NULL) != 0)
 		return (FAILUER);
-	if (pthread_mutex_init(&info->write_flag, NULL) != 0)
+	if (pthread_mutex_init(&info->write_lock, NULL) != 0)
 		return (FAILUER);
 	return (SUCCESS);
 }
@@ -60,7 +60,7 @@ t_info	*init_info(int ac, char **av)
 		info->num_must_eat = ft_atoi(av[5]);
 	else
 		info ->num_must_eat = -1;
-	if (init_tinfo_mutex(info, n) == FAILUER)
+	if (init_info_mutex(info, n) == FAILUER)
 		return (NULL);
 	return (info);
 }
@@ -86,5 +86,20 @@ t_philo	*init_philo(t_info *info)
 		i++;
 	}
 	return (philo);
+}
+
+int	initializer(int ac, char **av)
+{
+	t_info	*info;
+	t_philo *philo;
+
+	info = init_info(ac, av);
+	if (!info)
+		return (FAILUER);
+	philo = init_philo(info);
+    if (!philo)
+		return (FAILUER);
+	info->start_time = get_time_now();
+	return (SUCCESS);
 }
 
