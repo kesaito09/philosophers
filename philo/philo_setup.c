@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:23:40 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/14 17:15:28 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 00:55:25 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ pthread_mutex_t	*init_forks(int n)
 	return (forks);
 }
 
-int init_tinfo_mutex(t_info *info, int n)
+int init_info_mutex(t_info *info, int n)
 {
 	info->forks = init_forks(n);
 	if (!info->forks)
@@ -60,7 +60,7 @@ t_info	*init_info(int ac, char **av)
 		info->num_must_eat = ft_atoi(av[5]);
 	else
 		info ->num_must_eat = -1;
-	if (init_tinfo_mutex(info, n) == FAILUER)
+	if (init_info_mutex(info, n) == FAILUER)
 		return ( NULL);
 	return (info);
 }
