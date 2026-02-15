@@ -15,14 +15,15 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra
 
 MAND_SRCS = \
-			interface/main.c\
-			application/initializer.c\
-			application/simulation.c\
-			application/monitor.c\
-			domain/actions.c\
-			infrastructure/logger.c\
-			infrastructure/lib.c\
-			infrastructure/utils.c\
+			philo_main.c\
+			philo_parser.c\
+			philo_setup.c\
+			philo_simulation.c\
+			philo_monitor.c\
+			philo_routine.c\
+			philo_logger.c\
+			philo_utils.c\
+			philo_time.c\
 		
 
 
