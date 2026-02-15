@@ -1,80 +1,65 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   logger.c                                           :+:      :+:    :+:   */
+/*   philo_logger.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:56:37 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 06:51:49 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/15 16:15:00 by codex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static char	*get_message(t_state state)
+static const char	*get_message(t_state state)
 {
 	if (state == TAKE)
-        return ("has taken a fork");
-    else if (state == EAT)
-        return ("is eating");
-    else if (state == SLEEP)
-        return ("is sleeping");
-    else if (state == THINK)
-        return ("is thinking");
-    else if (state == DIE)
-        return ("died");
-    return ("error");
+		return ("has taken a fork");
+	if (state == EAT)
+		return ("is eating");
+	if (state == SLEEP)
+		return ("is sleeping");
+	if (state == THINK)
+		return ("is thinking");
+	if (state == DIE)
+		return ("died");
+	return ("error");
+}
+
+static int	can_print_state(t_philo *philo, t_state state)
+{
+	pthread_mutex_lock(&philo->info->state_lock);
+	if (philo->info->is_stop_sim && state != DIE)
+	{
+		pthread_mutex_unlock(&philo->info->state_lock);
+		return (FAILURE);
+	}
+	return (SUCCESS);
+}
+
+static void	unlock_state_after_print_check(t_philo *philo)
+{
+	pthread_mutex_unlock(&philo->info->state_lock);
+}
+
+static void	print_state_log(t_philo *philo, t_state state)
+{
+	long			elapsed;
+	const char		*msg;
+
+	elapsed = get_time_now() - philo->info->start_time;
+	msg = get_message(state);
+	printf("%ld %d %s\n", elapsed, philo->id, msg);
 }
 
 int	logger(t_philo *philo, t_state state)
 {
-	char	*msg;
-	long	time;
-
-	pthread_mutex_lock(&philo ->info.write_lock);
-
-	time = get_time_now() - philo->info.start_time;
-	msg = get_message(state);
-	printf("%ld %d %s\n",time, philo->id, msg);
-	pthread_mutex_unlock(&philo->info.write_lock);
+	if (can_print_state(philo, state) == FAILURE)
+		return (FAILURE);
+	pthread_mutex_lock(&philo->info->write_lock);
+	unlock_state_after_print_check(philo);
+	print_state_log(philo, state);
+	pthread_mutex_unlock(&philo->info->write_lock);
 	return (SUCCESS);
 }
-
-// int init_info_mutex_tester(t_info *info, int n)
-// {
-// 	info->forks = init_forks(n);
-// 	if (!info->forks)
-// 		return (free(info), FAILUER);
-// 	if (pthread_mutex_init(&info->state_lock, NULL) != 0)
-// 		return (FAILUER);
-// 	if (pthread_mutex_init(&info->write_lock, NULL) != 0)
-// 		return (FAILUER);
-// 	return (SUCCESS);
-// }
-
-// t_info	*init_info_tester(int n)
-// {
-// 	t_info	*info;
-
-// 	info = ft_calloc(sizeof(t_info), 1);
-// 	if (!info)
-// 		return (NULL);
-// 	info->num_of_philo = n;
-// 	info->time_to_die = 4;
-// 	info->time_to_eat = 4;
-// 	info->time_to_sleep = 4;
-// 	info->num_must_eat = 4;
-// 	if (init_info_mutex_tester(info, n) == FAILUER)
-// 		return (NULL);
-// 	return (info);
-// }
-
-// int main(int ac, char **av)
-// {
-// 	t_info	*info;
-// 	t_philo	*philo;
-
-// 	info = init_info_tester(4);
-	
-// }

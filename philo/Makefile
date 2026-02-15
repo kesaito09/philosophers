@@ -12,7 +12,8 @@
 
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -pthread
+LDFLAGS = -pthread
 
 MAND_SRCS = \
 			philo_main.c\
@@ -36,7 +37,7 @@ $(LIBFT):
 	$(MAKE) -C $(LIBFTDIR)
 
 $(NAME):$(MAND_OBJS) 
-	$(CC) $(MAND_OBJS) -o $(NAME)
+	$(CC) $(MAND_OBJS) $(LDFLAGS) -o $(NAME)
 	
 %.o : %.c
 	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
