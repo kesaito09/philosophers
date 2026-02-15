@@ -27,22 +27,6 @@ static const char	*get_message(t_state state)
 	return ("error");
 }
 
-static int	can_print_state(t_philo *philo, t_state state)
-{
-	pthread_mutex_lock(&philo->info->state_lock);
-	if (philo->info->is_stop_sim && state != DIE)
-	{
-		pthread_mutex_unlock(&philo->info->state_lock);
-		return (FAILURE);
-	}
-	return (SUCCESS);
-}
-
-static void	unlock_state_after_print_check(t_philo *philo)
-{
-	pthread_mutex_unlock(&philo->info->state_lock);
-}
-
 static void	print_state_log(t_philo *philo, t_state state)
 {
 	long			elapsed;
@@ -55,11 +39,15 @@ static void	print_state_log(t_philo *philo, t_state state)
 
 int	logger(t_philo *philo, t_state state)
 {
-	if (can_print_state(philo, state) == FAILURE)
+	sync_take(&philo->info->state_lock);
+	if (philo->info->is_stop_sim && state != DIE)
+	{
+		sync_release(&philo->info->state_lock);
 		return (FAILURE);
-	pthread_mutex_lock(&philo->info->write_lock);
-	unlock_state_after_print_check(philo);
+	}
+	sync_take(&philo->info->write_lock);
+	sync_release(&philo->info->state_lock);
 	print_state_log(philo, state);
-	pthread_mutex_unlock(&philo->info->write_lock);
+	sync_release(&philo->info->write_lock);
 	return (SUCCESS);
 }

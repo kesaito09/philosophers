@@ -19,6 +19,8 @@ MAND_SRCS = \
 			philo_main.c\
 			philo_parser.c\
 			philo_setup.c\
+			philo_sync.c\
+			philo_forks.c\
 			philo_simulation.c\
 			philo_monitor.c\
 			philo_routine.c\

@@ -16,109 +16,72 @@ bool	is_simulation_finished(t_philo *philo)
 {
 	bool	flag;
 
-	pthread_mutex_lock(&philo->info->state_lock);
+	sync_take(&philo->info->state_lock);
 	flag = philo->info->is_stop_sim;
-	pthread_mutex_unlock(&philo->info->state_lock);
+	sync_release(&philo->info->state_lock);
 	return (flag);
-}
-
-static pthread_mutex_t	*first_fork(t_philo *philo)
-{
-	if (philo->id % 2 == 0)
-		return (philo->right_fork);
-	return (philo->left_fork);
-}
-
-static pthread_mutex_t	*second_fork(t_philo *philo)
-{
-	if (philo->id % 2 == 0)
-		return (philo->left_fork);
-	return (philo->right_fork);
 }
 
 static int	handle_single_philo(t_philo *philo)
 {
-	pthread_mutex_lock(philo->left_fork);
+	sync_take(philo->left_fork);
 	logger(philo, TAKE);
 	while (!is_simulation_finished(philo))
-		usleep(500);
-	pthread_mutex_unlock(philo->left_fork);
+		philo_usleep(philo, 1);
+	sync_release(philo->left_fork);
 	return (FAILURE);
-}
-
-static int	lock_and_log_fork(t_philo *philo, pthread_mutex_t *fork)
-{
-	pthread_mutex_lock(fork);
-	if (logger(philo, TAKE) == FAILURE)
-	{
-		pthread_mutex_unlock(fork);
-		return (FAILURE);
-	}
-	return (SUCCESS);
-}
-
-static int	lock_forks(t_philo *philo)
-{
-	pthread_mutex_t	*first;
-	pthread_mutex_t	*second;
-
-	if (philo->info->num_of_philo == 1)
-		return (handle_single_philo(philo));
-	first = first_fork(philo);
-	second = second_fork(philo);
-	if (lock_and_log_fork(philo, first) == FAILURE)
-		return (FAILURE);
-	if (lock_and_log_fork(philo, second) == FAILURE)
-	{
-		pthread_mutex_unlock(first);
-		return (FAILURE);
-	}
-	return (SUCCESS);
-}
-
-static void	unlock_forks(t_philo *philo)
-{
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
 }
 
 static void	update_last_eat_time(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->last_eat_lock);
+	sync_take(&philo->last_eat_lock);
 	philo->time_last_eat = get_time_now();
-	pthread_mutex_unlock(&philo->last_eat_lock);
+	sync_release(&philo->last_eat_lock);
 }
 
 static void	increment_eat_count(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->last_eat_lock);
+	sync_take(&philo->last_eat_lock);
 	philo->eat_count++;
-	pthread_mutex_unlock(&philo->last_eat_lock);
+	sync_release(&philo->last_eat_lock);
 }
 
 static int	philo_eat(t_philo *philo)
 {
-	if (lock_forks(philo) == FAILURE)
+	t_lock	*first;
+	t_lock	*second;
+
+	if (philo->info->num_of_philo == 1)
+		return (handle_single_philo(philo));
+	if (philo_take_forks(philo, &first, &second) == FAILURE)
 		return (FAILURE);
+	if (is_simulation_finished(philo))
+		return (philo_release_forks(first, second), FAILURE);
 	update_last_eat_time(philo);
 	if (logger(philo, EAT) == FAILURE)
-	{
-		unlock_forks(philo);
-		return (FAILURE);
-	}
-	smart_sleep(philo, philo->info->time_to_eat);
+		return (philo_release_forks(first, second), FAILURE);
+	philo_usleep(philo, philo->info->time_to_eat);
 	increment_eat_count(philo);
-	unlock_forks(philo);
+	philo_release_forks(first, second);
+	if (is_simulation_finished(philo))
+		return (FAILURE);
 	return (SUCCESS);
 }
 
-static int	philo_sleep_and_think(t_philo *philo)
+static int	philo_sleep(t_philo *philo)
 {
 	if (logger(philo, SLEEP) == FAILURE)
 		return (FAILURE);
-	smart_sleep(philo, philo->info->time_to_sleep);
+	philo_usleep(philo, philo->info->time_to_sleep);
+	return (SUCCESS);
+}
+
+static int	philo_think(t_philo *philo)
+{
 	if (logger(philo, THINK) == FAILURE)
 		return (FAILURE);
+	if (philo->info->num_of_philo % 2 == 1)
+		philo_usleep(philo, 1);
 	return (SUCCESS);
 }
 
@@ -128,12 +91,14 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		usleep(1000);
+		philo_usleep(philo, 1);
 	while (!is_simulation_finished(philo))
 	{
 		if (philo_eat(philo) == FAILURE)
 			break ;
-		if (philo_sleep_and_think(philo) == FAILURE)
+		if (philo_sleep(philo) == FAILURE)
+			break ;
+		if (philo_think(philo) == FAILURE)
 			break ;
 	}
 	return (NULL);

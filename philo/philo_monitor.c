@@ -14,18 +14,18 @@
 
 void	set_simulation_stop(t_info *info)
 {
-	pthread_mutex_lock(&info->state_lock);
+	sync_take(&info->state_lock);
 	info->is_stop_sim = true;
-	pthread_mutex_unlock(&info->state_lock);
+	sync_release(&info->state_lock);
 }
 
 static bool	is_simulation_stopped(t_info *info)
 {
 	bool	stopped;
 
-	pthread_mutex_lock(&info->state_lock);
+	sync_take(&info->state_lock);
 	stopped = info->is_stop_sim;
-	pthread_mutex_unlock(&info->state_lock);
+	sync_release(&info->state_lock);
 	return (stopped);
 }
 
@@ -33,9 +33,9 @@ static long	get_last_eat_time(t_philo *philo)
 {
 	long	last_time;
 
-	pthread_mutex_lock(&philo->last_eat_lock);
+	sync_take(&philo->last_eat_lock);
 	last_time = philo->time_last_eat;
-	pthread_mutex_unlock(&philo->last_eat_lock);
+	sync_release(&philo->last_eat_lock);
 	return (last_time);
 }
 
@@ -50,9 +50,9 @@ static long	get_eat_count(t_philo *philo)
 {
 	long	eat_count;
 
-	pthread_mutex_lock(&philo->last_eat_lock);
+	sync_take(&philo->last_eat_lock);
 	eat_count = philo->eat_count;
-	pthread_mutex_unlock(&philo->last_eat_lock);
+	sync_release(&philo->last_eat_lock);
 	return (eat_count);
 }
 
@@ -72,29 +72,24 @@ static bool	all_philosophers_sated(t_philo *philos, t_info *info)
 	return (true);
 }
 
-static bool	try_set_stop_and_lock_write(t_info *info)
-{
-	pthread_mutex_lock(&info->state_lock);
-	if (info->is_stop_sim)
-	{
-		pthread_mutex_unlock(&info->state_lock);
-		return (false);
-	}
-	info->is_stop_sim = true;
-	pthread_mutex_lock(&info->write_lock);
-	pthread_mutex_unlock(&info->state_lock);
-	return (true);
-}
-
 static void	announce_death(t_philo *philo)
 {
+	t_info	*info;
 	long	elapsed;
 
-	if (!try_set_stop_and_lock_write(philo->info))
+	info = philo->info;
+	sync_take(&info->state_lock);
+	if (info->is_stop_sim)
+	{
+		sync_release(&info->state_lock);
 		return ;
-	elapsed = get_time_now() - philo->info->start_time;
+	}
+	info->is_stop_sim = true;
+	sync_take(&info->write_lock);
+	sync_release(&info->state_lock);
+	elapsed = get_time_now() - info->start_time;
 	printf("%ld %d died\n", elapsed, philo->id);
-	pthread_mutex_unlock(&philo->info->write_lock);
+	sync_release(&info->write_lock);
 }
 
 static int	check_death_and_stop(t_philo *philos, t_info *info)
@@ -125,7 +120,7 @@ int	monitoring(t_philo *philos, t_info *info)
 		}
 		if (check_death_and_stop(philos, info) == SUCCESS)
 			return (SUCCESS);
-		usleep(500);
+		philo_usleep(&philos[0], 1);
 	}
 	return (SUCCESS);
 }

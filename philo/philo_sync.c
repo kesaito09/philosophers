@@ -1,38 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_time.c                                       :+:      :+:    :+:   */
+/*   philo_sync.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/18 19:08:42 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 16:15:00 by codex             ###   ########.fr       */
+/*   Created: 2026/02/15 21:52:00 by codex             #+#    #+#             */
+/*   Updated: 2026/02/15 21:52:00 by codex            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	get_time_now(void)
+int	sync_init(t_lock *lock)
 {
-	struct timeval	time;
-
-	if (gettimeofday(&time, NULL) == -1)
+	if (!lock)
 		return (FAILURE);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	if (pthread_mutex_init(lock, NULL) != 0)
+		return (FAILURE);
+	return (SUCCESS);
 }
 
-int	philo_usleep(t_philo *philo, long duration_ms)
+void	sync_destroy(t_lock *lock)
 {
-	long	start;
+	if (!lock)
+		return ;
+	pthread_mutex_destroy(lock);
+}
 
-	if (!philo || duration_ms <= 0)
-		return (SUCCESS);
-	start = get_time_now();
-	while (!is_simulation_finished(philo))
-	{
-		if (get_time_now() - start >= duration_ms)
-			break ;
-		usleep(500);
-	}
-	return (SUCCESS);
+void	sync_take(t_lock *lock)
+{
+	if (!lock)
+		return ;
+	pthread_mutex_lock(lock);
+}
+
+void	sync_release(t_lock *lock)
+{
+	if (!lock)
+		return ;
+	pthread_mutex_unlock(lock);
 }

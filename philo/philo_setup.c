@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-static void	destroy_forks(pthread_mutex_t *forks, int count)
+static void	destroy_forks(t_lock *forks, int count)
 {
 	int	i;
 
@@ -21,20 +21,20 @@ static void	destroy_forks(pthread_mutex_t *forks, int count)
 	i = 0;
 	while (i < count)
 	{
-		pthread_mutex_destroy(&forks[i]);
+		sync_destroy(&forks[i]);
 		i++;
 	}
 	free(forks);
 }
 
-static int	init_forks_mutexes(pthread_mutex_t *forks, int count)
+static int	init_forks_mutexes(t_lock *forks, int count)
 {
 	int	i;
 
 	i = 0;
 	while (i < count)
 	{
-		if (pthread_mutex_init(&forks[i], NULL) != 0)
+		if (sync_init(&forks[i]) == FAILURE)
 		{
 			destroy_forks(forks, i);
 			return (FAILURE);
@@ -44,11 +44,11 @@ static int	init_forks_mutexes(pthread_mutex_t *forks, int count)
 	return (SUCCESS);
 }
 
-pthread_mutex_t	*init_forks(int n)
+t_lock	*init_forks(int n)
 {
-	pthread_mutex_t	*forks;
+	t_lock	*forks;
 
-	forks = ft_calloc((size_t)n, sizeof(pthread_mutex_t));
+	forks = ft_calloc((size_t)n, sizeof(t_lock));
 	if (!forks)
 		return (NULL);
 	if (init_forks_mutexes(forks, n) == FAILURE)
@@ -58,11 +58,11 @@ pthread_mutex_t	*init_forks(int n)
 
 static int	init_info_locks(t_info *info)
 {
-	if (pthread_mutex_init(&info->state_lock, NULL) != 0)
+	if (sync_init(&info->state_lock) == FAILURE)
 		return (FAILURE);
-	if (pthread_mutex_init(&info->write_lock, NULL) != 0)
+	if (sync_init(&info->write_lock) == FAILURE)
 	{
-		pthread_mutex_destroy(&info->state_lock);
+		sync_destroy(&info->state_lock);
 		return (FAILURE);
 	}
 	return (SUCCESS);
@@ -75,8 +75,8 @@ static int	init_info_resources(t_info *info)
 	info->forks = init_forks(info->num_of_philo);
 	if (!info->forks)
 	{
-		pthread_mutex_destroy(&info->state_lock);
-		pthread_mutex_destroy(&info->write_lock);
+		sync_destroy(&info->state_lock);
+		sync_destroy(&info->write_lock);
 		return (FAILURE);
 	}
 	return (SUCCESS);
@@ -106,7 +106,7 @@ static int	init_single_philo(t_philo *philo, t_info *info, int index)
 	philo->info = info;
 	philo->left_fork = &info->forks[index];
 	philo->right_fork = &info->forks[(index + 1) % info->num_of_philo];
-	if (pthread_mutex_init(&philo->last_eat_lock, NULL) != 0)
+	if (sync_init(&philo->last_eat_lock) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
 }
@@ -118,7 +118,7 @@ static void	destroy_philo_locks(t_philo *philos, int count)
 	i = 0;
 	while (i < count)
 	{
-		pthread_mutex_destroy(&philos[i].last_eat_lock);
+		sync_destroy(&philos[i].last_eat_lock);
 		i++;
 	}
 }
@@ -189,8 +189,8 @@ static void	destroy_info(t_info *info)
 	if (!info)
 		return ;
 	destroy_forks(info->forks, info->num_of_philo);
-	pthread_mutex_destroy(&info->state_lock);
-	pthread_mutex_destroy(&info->write_lock);
+	sync_destroy(&info->state_lock);
+	sync_destroy(&info->write_lock);
 	free(info);
 }
 
