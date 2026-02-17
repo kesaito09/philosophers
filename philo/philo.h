@@ -13,6 +13,7 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+# include "philo_sync.h"
 # include <stdbool.h>
 # include <limits.h>
 # include <pthread.h>
@@ -22,7 +23,6 @@
 # include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include "philo_sync.h"
 
 # define SUCCESS 1
 # define FAILURE -1
@@ -51,7 +51,7 @@ typedef struct s_philo
 	t_lock			*left_fork;
 	t_lock			*right_fork;
 	t_lock			last_eat_lock;
-	t_info				*info;
+	t_info			*info;
 }   t_philo;
 
 typedef enum e_state
