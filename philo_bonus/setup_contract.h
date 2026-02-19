@@ -1,17 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_bonus.h                                      :+:      :+:    :+:   */
+/*   setup_contract.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 18:26:12 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/16 23:39:27 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/19 15:12:16 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_BONUS_H
-# define PHILO_BONUS_H
+#ifndef SETUP_CONTRACT_H
+# define SETUP_CONTRACT_H
+
+/*
+** [Layer] Setup Layer
+** このファイルの責務:
+** - レイヤ間で共有する型(t_info/t_philo)を定義する
+** - 各層の公開インターフェース(関数宣言)を集約する
+** - 名前付きセマフォ名/状態enumなど実行共通定数を管理する
+*/
 
 # include <fcntl.h>
 # include <limits.h>
@@ -26,6 +34,7 @@
 # include <sys/time.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <errno.h>
 
 # define SUCCESS 1
 # define FAILURE -1
@@ -72,6 +81,9 @@ typedef enum e_state
 /* parse */
 int			parse_input(int ac, char **av, t_info *info);
 int			setup_philos(t_philo *philos, t_info	*info);
+
+sem_t	*sem_open_wrapper(char *sem_name, int n);
+int		sem_unlink_wrapper(sem_t *sem);
 
 
 /* state/time */

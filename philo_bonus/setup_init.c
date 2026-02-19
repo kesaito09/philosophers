@@ -1,16 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_setup.c                                      :+:      :+:    :+:   */
+/*   setup_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 22:43:22 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/16 23:54:02 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/19 15:59:22 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_bonus.h"
+#include "setup_contract.h"
+
+/*
+** [Layer] Setup Layer
+** このファイルの責務:
+** - t_info / t_philo の初期化をまとめる
+** - 実行前に必要な共有状態(開始時刻・カウンタ初期値)を確定する
+** - リソース確保失敗時のロールバック起点を提供する
+*/
 
 int	setup_philos(t_philo *philos, t_info *info)
 {
@@ -52,15 +60,16 @@ t_info	*init_info(int ac, char **av)
 	return (info);
 }
 
-static char	*create_name(int id)
-{
-	char	*sem_name;
+// static char	*create_name(int id)
+// {
+// 	char	*sem_name;
+// 	char	*prefix;
 
-	sem_name = 
+// 	sem_name =  strdup(sem_name)
 	
 	
 	
-}
+// }
 
 static int	init_single_philo(t_philo *philo, t_info *info, int index)
 {
@@ -110,4 +119,3 @@ int	initializer(int ac, char **av, t_philo **philos, t_info **info)
 	set_initial_meal_times(*philos, *info);
 	return (SUCCESS);
 }
-

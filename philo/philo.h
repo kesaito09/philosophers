@@ -14,9 +14,9 @@
 # define PHILO_H
 
 # include "philo_sync.h"
-# include <stdbool.h>
 # include <limits.h>
 # include <pthread.h>
+# include <stdbool.h>
 # include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -30,29 +30,29 @@
 
 typedef struct s_info
 {
-	int				num_of_philo;
-	long			time_to_die;
-	long			time_to_eat;
-	long			time_to_sleep;
-	long			num_must_eat;
-	long			start_time;
-	bool			is_stop_sim;
-	t_lock			state_lock;
-	t_lock			write_lock;
-	t_lock			*forks;
-}   t_info;
+	int			num_of_philo;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
+	long		num_must_eat;
+	long		start_time;
+	bool		is_stop_sim;
+	t_lock		state_lock;
+	t_lock		write_lock;
+	t_lock		*forks;
+}				t_info;
 
 typedef struct s_philo
 {
-	int				id;
-	long			eat_count;
-	long			time_last_eat;
-	pthread_t		thread;
-	t_lock			*left_fork;
-	t_lock			*right_fork;
-	t_lock			last_eat_lock;
-	t_info			*info;
-}   t_philo;
+	int			id;
+	long		eat_count;
+	long		time_last_eat;
+	pthread_t	thread;
+	t_lock		*left_fork;
+	t_lock		*right_fork;
+	t_lock		last_eat_lock;
+	t_info		*info;
+}				t_philo;
 
 typedef enum e_state
 {
@@ -61,36 +61,37 @@ typedef enum e_state
 	SLEEP,
 	THINK,
 	DIE,
-}   t_state;
+}				t_state;
 
 /* parse */
 int				parse_input(int ac, char **av, t_info *info);
 
 /* setup */
-t_info				*init_info(int ac, char **av);
-t_philo				*init_philo(t_info *info);
-t_lock				*init_forks(int n);
+t_info			*init_info(int ac, char **av);
+t_philo			*init_philo(t_info *info);
+t_lock			*init_forks(int n);
 int				initializer(int ac, char **av, t_philo **philos, t_info **info);
-void				destroy_simulation(t_philo *philos, t_info *info);
+void			destroy_simulation(t_philo *philos, t_info *info);
 
 /* simulation */
 int				start_simulation(t_philo *philos, t_info *info);
 int				monitoring(t_philo *philos, t_info *info);
-void				*philo_routine(void *arg);
-int				philo_take_forks(t_philo *philo, t_lock **first, t_lock **second);
-void				philo_release_forks(t_lock *first, t_lock *second);
+void			*philo_routine(void *arg);
+int				philo_take_forks(t_philo *philo, t_lock **first,
+					t_lock **second);
+void			philo_release_forks(t_lock *first, t_lock *second);
 
 /* logger */
 int				logger(t_philo *philo, t_state state);
 
 /* state/time */
-long				get_time_now(void);
+long			get_time_now(void);
 int				philo_usleep(t_philo *philo, long duration_ms);
-bool				is_simulation_finished(t_philo *philo);
-void				set_simulation_stop(t_info *info);
+bool			is_simulation_finished(t_philo *philo);
+void			set_simulation_stop(t_info *info);
 
 /* mini-lib */
 int				ft_atoi(const char *nptr);
-void				*ft_calloc(size_t nmemb, size_t size);
+void			*ft_calloc(size_t nmemb, size_t size);
 
 #endif

@@ -12,8 +12,13 @@
 
 NAME = philo
 CC = cc
+DEBUG ?= 0
 CFLAGS = -Wall -Werror -Wextra -pthread
 LDFLAGS = -pthread
+
+ifeq ($(DEBUG),1)
+	CFLAGS += -DDEBUG -g3 -O0
+endif
 
 MAND_SRCS = \
 			philo_main.c\
@@ -52,5 +57,8 @@ fclean: clean
 
 re: fclean all
 
+debug:
+	$(MAKE) DEBUG=1 re
 
-.PHONY: all clean fclean re
+
+.PHONY: all clean fclean re debug

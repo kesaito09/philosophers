@@ -10,13 +10,19 @@
 #                                                                              #
 # **************************************************************************** #
 
+# [Layer] Build Configuration
+# このファイルの責務:
+# - philo_bonus のビルド手順を管理する
+# - アーキテクチャ上のモジュール分割に合わせてコンパイル単位を定義する
+# - 実装が増えた際の依存関係更新ポイントを一元化する
+
 NAME = philo_bonus
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -pthread
 LDFLAGS = -pthread
 
 MAND_SRCS = \
-			philo_main.c\
+			entry_main.c\
 		
 
 

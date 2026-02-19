@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_logger.c                                     :+:      :+:    :+:   */
+/*   child_logger.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_bonus.h"
+#include "setup_contract.h"
+
+/*
+** [Layer] Child Runtime Layer
+** このファイルの責務:
+** - 哲学者状態(TAKE/EAT/SLEEP/THINK/DIE)の表示規約を管理する
+** - 表示時刻(開始からの経過ms)の整形責務を持つ
+** - 出力同期(sem_write)は呼び出し側との責務分担で運用する
+*/
 
 static const char	*get_message(t_state state)
 {

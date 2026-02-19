@@ -78,10 +78,15 @@ static int	philo_sleep(t_philo *philo)
 
 static int	philo_think(t_philo *philo)
 {
+	unsigned long	think_time;
+
 	if (logger(philo, THINK) == FAILURE)
 		return (FAILURE);
-	if (philo->info->num_of_philo % 2 == 1)
-		philo_usleep(philo, 1);
+	if (philo->info->num_of_philo % 2 == 0)
+		return (SUCCESS);
+	think_time = (philo->info->time_to_eat * 2) -
+	philo->info->time_to_sleep;
+	philo_usleep(philo, think_time);
 	return (SUCCESS);
 }
 
@@ -90,7 +95,7 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->id % 2 == 0)
+	if (philo->info->num_of_philo % 2 == 0)
 		philo_usleep(philo, 1);
 	while (!is_simulation_finished(philo))
 	{
