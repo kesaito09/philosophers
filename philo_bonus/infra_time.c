@@ -29,12 +29,12 @@ long	get_time_now(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int	philo_usleep(t_philo *philo, long duration_ms)
+void	philo_usleep(t_philo *philo, long duration_ms)
 {
 	long	start;
 
 	if (!philo || duration_ms <= 0)
-		return (SUCCESS);
+		return ;
 	start = get_time_now();
 	while (!is_simulation_finished(philo))
 	{
@@ -42,5 +42,4 @@ int	philo_usleep(t_philo *philo, long duration_ms)
 			break ;
 		usleep(500);
 	}
-	return (SUCCESS);
 }

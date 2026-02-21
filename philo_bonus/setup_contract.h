@@ -21,6 +21,7 @@
 ** - 名前付きセマフォ名/状態enumなど実行共通定数を管理する
 */
 
+# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <pthread.h>
@@ -34,7 +35,6 @@
 # include <sys/time.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# include <errno.h>
 
 # define SUCCESS 1
 # define FAILURE -1
@@ -78,20 +78,33 @@ typedef enum e_state
 	DIE,
 }			t_state;
 
+
+int	child_runtime(t_philo *philo, t_info *info);
+
 /* parse */
 int			parse_input(int ac, char **av, t_info *info);
-int			setup_philos(t_philo *philos, t_info	*info);
+int			setup_philos(t_philo *philos, t_info *info);
 
-sem_t	*sem_open_wrapper(char *sem_name, int n);
-int		sem_unlink_wrapper(sem_t *sem);
+int			initializer(int ac, char **av, t_philo **philos, t_info **info);
+
+sem_t		*sem_open_wrapper(char *sem_name, int n);
+int			sem_unlink_wrapper(sem_t *sem);
+int			cleanup_semaphores(t_info *info);
+
+int			logger(t_philo *philo, t_state state);
 
 
 /* state/time */
 long		get_time_now(void);
 int			philo_usleep(t_philo *philo, long duration_ms);
 
-/* mini-lib */
-int			ft_atoi(const char *nptr);
+/* lib */
 void		*ft_calloc(size_t nmemb, size_t size);
+size_t		ft_strlen(const char *str);
+void		*ft_memcpy(void *dest, const void *src, size_t n);
+void		*ft_memset(void *s, int c, size_t n);
+char		*ft_strjoin(char const *s1, char const *s2);
+char		*ft_itoa(int n);
+char		*ft_strdup(const char *s);
 
 #endif

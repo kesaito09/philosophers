@@ -1,25 +1,48 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   child_routine.c                              :+:      :+:    :+:   */
+/*   child_routine.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/19 18:00:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/19 18:00:00 by codex            ###   ########.fr       */
+/*   Created: 2026/02/21 15:55:48 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/21 21:14:45 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-** [Layer] Child Runtime Layer
-** このファイルの責務:
-** - eat -> sleep -> think のループ本体を実装する
-** - フォーク取得/返却、食事時刻更新、eat_count更新を行う
-** - 監視レイヤと競合しないよう同期境界を明確に保つ
-** - stop条件を見てループを終了する
-**
-** 想定する関数(実装はまだ書かない):
-** - run_philosopher_routine(...)
-** - do_eat(...)
-** - do_sleep_and_think(...)
-*/
+#include "setup_contract.h"
+
+int	take_forks(t_info *info)
+{
+	if (sem_wait(info->sem_sit) != 0 || sem_wait(info->forks) != 0
+		|| sem_wait(info->forks) != 0)
+		return (FAILURE);
+	return (SUCCESS);
+}
+
+int	back_forks(t_info *info)
+{
+	if (sem_post(info->forks) != 0
+		|| sem_post(info->forks) != 0
+		|| sem_post(info->sem_sit) != 0)
+		return (FAILURE);
+	return (SUCCESS);
+}
+
+int	philo_eat(t_philo *philo, t_info *info)
+{
+	if (take_forks(info) == FAILURE)
+		return (FAILURE);
+	philo_usleep(philo, info->time_to_eat);
+	if (back_forks(info) == FAILURE)
+		return (FAILURE);
+}
+
+int	philo_sleep(t_philo *philo, t_info *info)
+{
+	philo_usleep(philo, info->time_to_sleep);
+}
+
+int	philo_think(t_philo *philo, t_info *info)
+{
+}

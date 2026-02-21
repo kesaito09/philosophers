@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 18:24:17 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/19 11:05:24 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/19 22:28:23 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,17 @@
 
 int main(int ac, char **av)
 {
-	t_info	info;
+	t_info	*info;
 	t_philo	*philos;
 
-	if (parse_input(ac, av, &info) == FAILURE)
-		return (1);	
+	if (ac != 5 && ac != 6)
+		return (1);
+	info = NULL;
+	philos = NULL;
+	if (initializer(ac, av, &philos, &info))
+	{
+		return (1);
+	}
 	
 	
 	
