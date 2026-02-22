@@ -1,52 +1,40 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/01/17 20:39:44 by kesaitou          #+#    #+#              #
-#    Updated: 2026/02/16 18:30:01 by kesaitou         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-# [Layer] Build Configuration
-# このファイルの責務:
-# - philo_bonus のビルド手順を管理する
-# - アーキテクチャ上のモジュール分割に合わせてコンパイル単位を定義する
-# - 実装が増えた際の依存関係更新ポイントを一元化する
-
 NAME = philo_bonus
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -pthread
 LDFLAGS = -pthread
 
-MAND_SRCS = \
-			entry_main.c\
-		
+SRCS = \
+	entry_main.c \
+	setup_parse.c \
+	setup_init.c \
+	setup_philo.c \
+	setup_cleanup.c \
+	parent_runtime.c \
+	child_runtime.c \
+	child_eat.c \
+	child_routine.c \
+	infra_semaphore.c \
+	infra_time.c \
+	infra_logger.c \
+	infra_libs1.c \
+	infra_libs2.c
 
+OBJS = $(SRCS:.c=.o)
 
-MAND_OBJS = $(MAND_SRCS:.c=.o)
+all: $(NAME)
 
+$(NAME): $(OBJS)
+	$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
 
-all : $(NAME)
-
-$(LIBFT):
-	$(MAKE) -C $(LIBFTDIR)
-
-$(NAME):$(MAND_OBJS) 
-	$(CC) $(MAND_OBJS) $(LDFLAGS) -o $(NAME)
-	
-%.o : %.c
-	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(MAND_OBJS)
+	rm -f $(OBJS)
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
-
 
 .PHONY: all clean fclean re

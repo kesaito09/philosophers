@@ -5,69 +5,92 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/21 15:49:28 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/21 19:40:52 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
+/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "setup_contract.h"
 
-/*
-** [Layer] Child Runtime Layer
-** このファイルの責務:
-** - 子プロセス起動直後の手順を管理する
-** - 子プロセス内監視(死亡判定)を行う
-** - eat/sleep/think のルーティンを実行する
-** - ログ出力要求をInfra層へ渡す
-*/
+bool	is_simulation_finished(t_philo *philo)
+{
+	bool	flag;
 
+	while (sem_wait(philo->info->sem_state) == -1)
+	{
+		if (errno != EINTR)
+			return (true);
+	}
+	flag = philo->info->is_stop_sim;
+	if (sem_post(philo->info->sem_state) != 0)
+		return (true);
+	return (flag);
+}
+
+void	set_simulation_stop(t_info *info)
+{
+	while (sem_wait(info->sem_state) == -1)
+	{
+		if (errno != EINTR)
+			return ;
+	}
+	info->is_stop_sim = true;
+	sem_post(info->sem_state);
+}
+
+static long	get_last_eat_time(t_philo *philo)
+{
+	long	last_eat;
+
+	while (sem_wait(philo->sem_meal) == -1)
+	{
+		if (errno != EINTR)
+			return (get_time_now());
+	}
+	last_eat = philo->time_last_eat;
+	if (sem_post(philo->sem_meal) != 0)
+		return (get_time_now());
+	return (last_eat);
+}
+
+static void	*monitor_routine(void *arg)
+{
+	t_philo	*philo;
+	long	last_eat;
+
+	philo = (t_philo *)arg;
+	while (!is_simulation_finished(philo))
+	{
+		last_eat = get_last_eat_time(philo);
+		if (get_time_now() - last_eat >= philo->info->time_to_die)
+		{
+			set_simulation_stop(philo->info);
+			logger(philo, DIE);
+			exit(EXIT_DEAD);
+		}
+		usleep(500);
+	}
+	return (NULL);
+}
+
+/*
+ * 子プロセス側の統括関数:
+ * 1) 監視スレッドを起動する
+ * 2) 哲学者ルーティンを実行する
+ * 3) 終了フラグを立てて終了する
+ */
 int	child_runtime(t_philo *philo, t_info *info)
 {
 	pthread_t	monitor;
+	int			result;
 
-	
-	
-}
-/*
-** [Section] Child Bootstrap
-** - 監視とルーティンの開始順序を保証する
-** - 子プロセス終了コードを統一して返す
-**
-** 想定する関数(実装はまだ書かない):
-** - philo_child_entry(...)
-** - start_child_monitor_thread(...)
-** - join_or_detach_child_monitor(...)
-*/
-
-/*
-** [Section] Child Monitor
-** - 各哲学者の time_to_die 超過を監視する
-** - 死亡検知時にログ出力と終了シグナル通知を行う
-** - 必要なら must_eat 達成監視も扱う
-**
-** 想定する関数(実装はまだ書かない):
-** - child_monitor_routine(void *arg)
-** - detect_philo_death(...)
-** - notify_child_termination_reason(...)
-*/
-
-/*
-** [Section] Child Routine
-** - eat -> sleep -> think のループ本体を実装する
-** - フォーク取得/返却、食事時刻更新、eat_count更新を行う
-** - stop条件を見てループを終了する
-**
-** 想定する関数(実装はまだ書かない):
-** - run_philosopher_routine(...)
-** - do_eat(...)
-** - do_sleep_and_think(...)
-*/
-
-
-int	philo_routine(t_philo *philo, t_info *info)
-{
-
-	
-	
-	
+	if (pthread_create(&monitor, NULL, monitor_routine, philo) != 0)
+		return (FAILURE);
+	if (pthread_detach(monitor) != 0)
+		return (FAILURE);
+	result = philo_routine(philo);
+	set_simulation_stop(info);
+	if (result == SUCCESS)
+		return (SUCCESS);
+	return (FAILURE);
 }

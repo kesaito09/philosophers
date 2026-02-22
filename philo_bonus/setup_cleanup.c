@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   entry_main.c                                       :+:      :+:    :+:   */
+/*   setup_cleanup.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,29 +12,38 @@
 
 #include "setup_contract.h"
 
-int	main(int ac, char **av)
+static void	destroy_philos(t_philo *philos, t_info *info)
 {
-	t_info	*info;
-	t_philo	*philos;
+	int	i;
 
-	info = NULL;
-	philos = NULL;
-	if (ac != 5 && ac != 6)
+	if (!philos || !info)
+		return ;
+	i = 0;
+	while (i < info->num_of_philo)
 	{
-		write(2, "Error\n", 6);
-		return (1);
+		if (philos[i].sem_meal)
+			sem_close(philos[i].sem_meal);
+		if (philos[i].meal_sem_name)
+		{
+			sem_unlink_wrapper(philos[i].meal_sem_name);
+			free(philos[i].meal_sem_name);
+		}
+		i++;
 	}
-	if (initialize_simulation(ac, av, &philos, &info) == FAILURE)
-	{
-		write(2, "Error\n", 6);
-		return (1);
-	}
-	if (start_simulation(philos, info) == FAILURE)
-	{
-		write(2, "Error\n", 6);
-		destroy_simulation(philos, info);
-		return (1);
-	}
-	destroy_simulation(philos, info);
-	return (0);
+	free(philos);
+}
+
+static void	destroy_info(t_info *info)
+{
+	if (!info)
+		return ;
+	cleanup_semaphores(info);
+	free(info->pids);
+	free(info);
+}
+
+void	destroy_simulation(t_philo *philos, t_info *info)
+{
+	destroy_philos(philos, info);
+	destroy_info(info);
 }

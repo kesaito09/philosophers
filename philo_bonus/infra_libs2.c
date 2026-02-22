@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   entry_main.c                                       :+:      :+:    :+:   */
+/*   infra_libs2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,29 +12,69 @@
 
 #include "setup_contract.h"
 
-int	main(int ac, char **av)
+static int	count_len(int nbr)
 {
-	t_info	*info;
-	t_philo	*philos;
+	int		len;
+	long	n;
 
-	info = NULL;
-	philos = NULL;
-	if (ac != 5 && ac != 6)
+	len = 0;
+	n = nbr;
+	if (n <= 0)
 	{
-		write(2, "Error\n", 6);
-		return (1);
+		len++;
+		n = -n;
 	}
-	if (initialize_simulation(ac, av, &philos, &info) == FAILURE)
+	while (n)
 	{
-		write(2, "Error\n", 6);
-		return (1);
+		len++;
+		n /= 10;
 	}
-	if (start_simulation(philos, info) == FAILURE)
+	return (len);
+}
+
+char	*ft_itoa(int n)
+{
+	long	num;
+	char	*arr;
+	int		len;
+
+	num = n;
+	len = count_len(n);
+	arr = malloc(sizeof(char) * (len + 1));
+	if (!arr)
+		return (NULL);
+	arr[len] = '\0';
+	if (num == 0)
+		arr[0] = '0';
+	if (num < 0)
 	{
-		write(2, "Error\n", 6);
-		destroy_simulation(philos, info);
-		return (1);
+		arr[0] = '-';
+		num = -num;
 	}
-	destroy_simulation(philos, info);
-	return (0);
+	while (num)
+	{
+		arr[--len] = (num % 10) + '0';
+		num /= 10;
+	}
+	return (arr);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*arr;
+	size_t	len;
+	size_t	i;
+
+	i = 0;
+	len = ft_strlen(s);
+	arr = malloc(sizeof(char) * (len + 1));
+	if (!arr)
+		return (NULL);
+	while (i < len)
+	{
+		arr[i] = s[i];
+		i++;
+	}
+	arr[i] = '\0';
+	return (arr);
 }
