@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
+/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_philo		*init_philo(t_info *info);
 
 int			start_simulation(t_philo *philos, t_info *info);
 
-int			child_runtime(t_philo *philo, t_info *info);
+int			child_runtime(t_philo *philo);
 int			philo_routine(t_philo *philo);
 int			philo_eat(t_philo *philo);
 bool		is_simulation_finished(t_philo *philo);

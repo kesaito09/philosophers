@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
+/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static int	parse_atol(const char *s, long *out)
 	{
 		if (s[i] < '0' || s[i] > '9')
 			return (FAILURE);
-		value = (value * 10) + (unsigned long)(s[i] - '0');
-		if (value > LONG_MAX)
+		if (value > ((unsigned long)LONG_MAX - (s[i] - '0')) / 10)
 			return (FAILURE);
+		value = (value * 10) + (unsigned long)(s[i] - '0');
 		i++;
 	}
 	if (value == 0)

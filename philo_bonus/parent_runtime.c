@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
+/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	spawn_children(t_philo *philos, t_info *info)
 			return (kill_children(info, -1), reap_children(i), FAILURE);
 		if (pid == 0)
 		{
-			if (child_runtime(&philos[i], info) == SUCCESS)
+			if (child_runtime(&philos[i]) == SUCCESS)
 				exit(EXIT_DONE);
 			exit(EXIT_DEAD);
 		}

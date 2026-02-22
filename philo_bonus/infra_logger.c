@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
+/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static const char	*get_message(t_state state)
 	return ("error");
 }
 
-static int	is_log_allowed(t_philo *philo, t_state state)
+static bool	is_log_allowed(t_philo *philo, t_state state)
 {
-	int	allowed;
+	bool	allowed;
 
 	while (sem_wait(philo->info->sem_state) == -1)
 	{

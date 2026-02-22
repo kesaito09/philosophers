@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
+/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ bool	is_simulation_finished(t_philo *philo)
 {
 	bool	flag;
 
+	if (!philo || !philo->info)
+		return (true);
 	while (sem_wait(philo->info->sem_state) == -1)
 	{
 		if (errno != EINTR)
@@ -42,6 +44,8 @@ static long	get_last_eat_time(t_philo *philo)
 {
 	long	last_eat;
 
+	if (!philo)
+		return (0);
 	while (sem_wait(philo->sem_meal) == -1)
 	{
 		if (errno != EINTR)
@@ -79,7 +83,7 @@ static void	*monitor_routine(void *arg)
  * 2) 哲学者ルーティンを実行する
  * 3) 終了フラグを立てて終了する
  */
-int	child_runtime(t_philo *philo, t_info *info)
+int	child_runtime(t_philo *philo)
 {
 	pthread_t	monitor;
 	int			result;
@@ -89,8 +93,6 @@ int	child_runtime(t_philo *philo, t_info *info)
 	if (pthread_detach(monitor) != 0)
 		return (FAILURE);
 	result = philo_routine(philo);
-	set_simulation_stop(info);
-	if (result == SUCCESS)
-		return (SUCCESS);
-	return (FAILURE);
+	set_simulation_stop(philo->info);
+	return (result);
 }

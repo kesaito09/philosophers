@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
+/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ t_philo	*init_philo(t_info *info)
 	t_philo	*philos;
 	int		i;
 
+	if (!info)
+		return (NULL);
 	philos = ft_calloc((size_t)info->num_of_philo, sizeof(t_philo));
 	if (!philos)
 		return (NULL);
