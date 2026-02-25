@@ -1,49 +1,38 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/01/17 20:39:44 by kesaitou          #+#    #+#              #
-#    Updated: 2026/02/22 20:58:05 by kesaitou         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = philo
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread
+CFLAGS = -Wall -Werror -Wextra -pthread -Iinclude
 LDFLAGS = -pthread
 
-
 SRCS = \
-			philo_main.c\
-			philo_parser.c\
-			philo_setup.c\
-			philo_sync.c\
-			philo_forks.c\
-			philo_simulation.c\
-			philo_monitor.c\
-			philo_routine.c\
-			philo_logger.c\
-			philo_utils.c\
-			philo_time.c\
-		
-
+	presentation/philo_main.c \
+	presentation/philo_parser.c \
+	presentation/philo_setup.c \
+	presentation/philo_cleanup.c \
+	application/philo_simulation.c \
+	application/philo_monitor.c \
+	domain/philo_routine.c \
+	domain/domain_philo_routine.c \
+	domain/domain_philo_eat.c \
+	infrastructure/philo_sync.c \
+	infrastructure/philo_logger.c \
+	infrastructure/philo_utils.c \
+	infrastructure/philo_time.c \
+	infrastructure/philo_ops.c \
+	infrastructure/philo_ops_core.c \
+	infrastructure/philo_ops_forks.c \
+	infrastructure/philo_ops_sync.c \
+	infrastructure/philo_resource.c \
+	infrastructure/philo_resource_locks.c
 
 OBJS = $(SRCS:.c=.o)
 
+all: $(NAME)
 
-all : $(NAME)
-
-$(LIBFT):
-	$(MAKE) -C $(LIBFTDIR)
-
-$(NAME):$(OBJS) 
+$(NAME): $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
-	
-%.o : %.c
-	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
@@ -53,4 +42,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re debug
+.PHONY: all clean fclean re

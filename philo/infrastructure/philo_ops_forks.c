@@ -1,48 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_forks.c                                      :+:      :+:    :+:   */
+/*   philo_ops_forks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/15 21:55:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/15 21:55:00 by codex            ###   ########.fr       */
+/*   Created: 2026/02/25 17:15:56 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/25 17:17:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_infra.h"
 
-static t_lock	*first_fork(t_philo *philo)
+static void	*first_fork(t_philo *philo)
 {
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 == 1)
 		return (philo->right_fork);
 	return (philo->left_fork);
 }
 
-static t_lock	*second_fork(t_philo *philo)
+static void	*second_fork(t_philo *philo)
 {
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 == 1)
 		return (philo->left_fork);
 	return (philo->right_fork);
 }
 
-int	philo_take_forks(t_philo *philo, t_lock **first, t_lock **second)
+int	ops_take_forks(t_philo *self, void **first, void **second)
 {
-	if (!philo || !first || !second)
+	if (!self || !first || !second)
 		return (FAILURE);
-	*first = first_fork(philo);
-	*second = second_fork(philo);
+	*first = first_fork(self);
+	*second = second_fork(self);
 	sync_take(*first);
-	if (logger(philo, TAKE) == FAILURE)
-		return (sync_release(*first), FAILURE);
 	sync_take(*second);
-	if (logger(philo, TAKE) == FAILURE)
-		return (sync_release(*second), sync_release(*first), FAILURE);
 	return (SUCCESS);
 }
 
-void	philo_release_forks(t_lock *first, t_lock *second)
+void	ops_drop_forks(t_philo *self, void *first, void *second)
 {
+	(void)self;
 	if (second)
 		sync_release(second);
 	if (first)

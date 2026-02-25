@@ -5,17 +5,28 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/18 19:08:42 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 16:15:00 by codex             ###   ########.fr       */
+/*   Created: 2026/02/25 17:17:33 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/25 17:17:40 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_infra.h"
+#include "philo_types.h"
+#include <sys/time.h>
+#include <unistd.h>
+
+bool	is_simulation_finished(t_philo *philo)
+{
+	bool	flag;
+	sync_take(philo->info->state_lock);
+	flag = philo->info->is_stop_sim;
+	sync_release(philo->info->state_lock);
+	return (flag);
+}
 
 long	get_time_now(void)
 {
 	struct timeval	time;
-
 	if (gettimeofday(&time, NULL) == -1)
 		return (FAILURE);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
@@ -24,7 +35,6 @@ long	get_time_now(void)
 int	philo_usleep(t_philo *philo, long duration_ms)
 {
 	long	start;
-
 	if (!philo || duration_ms <= 0)
 		return (SUCCESS);
 	start = get_time_now();

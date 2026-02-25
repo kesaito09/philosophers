@@ -1,47 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils1_lib.c                                 :+:      :+:    :+:   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/18 19:08:42 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/14 22:54:22 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/25 17:17:44 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/25 17:18:20 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-static int	ft_issep(char c);
-
-int	ft_atoi(const char *nptr)
-{
-	int	result;
-	int	sign;
-
-	sign = 1;
-	while (ft_issep(*nptr))
-		nptr++;
-	if (*nptr == '+' || *nptr == '-')
-	{
-		if (*nptr == '-')
-			sign = -1;
-		nptr++;
-	}
-	result = 0;
-	while (*nptr >= '0' && *nptr <= '9')
-	{
-		result = result * 10 + (*nptr - '0');
-		nptr++;
-	}
-	return (result * sign);
-}
-
-static int	ft_issep(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
-		|| c == '\r');
-}
+#include "philo_infra.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 void	*ft_memset(void *s, int c, size_t n)
 {

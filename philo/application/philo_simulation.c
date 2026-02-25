@@ -5,12 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/15 05:27:13 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/15 16:15:00 by codex             ###   ########.fr       */
+/*   Created: 2026/02/25 16:42:00 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/25 16:42:35 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_app.h"
+#include "philo_domain.h"
+#include "philo_infra.h"
+#include "philo_types.h"
 
 static int	join_philosophers_thread(t_philo *philos, t_info *info)
 {
