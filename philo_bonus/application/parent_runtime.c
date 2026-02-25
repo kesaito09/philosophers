@@ -1,21 +1,12 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parent_runtime.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "setup_contract.h"
-
+#include "bonus_app.h"
+#include "bonus_domain.h"
+#include <signal.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
 static void	kill_children(t_info *info, pid_t except)
 {
 	int	i;
-
 	i = 0;
 	while (i < info->num_of_philo)
 	{
@@ -24,7 +15,6 @@ static void	kill_children(t_info *info, pid_t except)
 		i++;
 	}
 }
-
 static void	reap_children(int remaining)
 {
 	while (remaining > 0)
@@ -33,12 +23,10 @@ static void	reap_children(int remaining)
 		remaining--;
 	}
 }
-
 static int	spawn_children(t_philo *philos, t_info *info)
 {
 	int		i;
 	pid_t	pid;
-
 	i = 0;
 	while (i < info->num_of_philo)
 	{
@@ -56,13 +44,11 @@ static int	spawn_children(t_philo *philos, t_info *info)
 	}
 	return (SUCCESS);
 }
-
 static int	wait_children(t_info *info)
 {
 	int		finished;
 	int		status;
 	pid_t	pid;
-
 	finished = 0;
 	while (finished < info->num_of_philo)
 	{
@@ -79,12 +65,6 @@ static int	wait_children(t_info *info)
 	}
 	return (SUCCESS);
 }
-
-/*
- * 親プロセス側の統括関数:
- * 1) 子プロセスを生成する
- * 2) 子プロセス終了を監視し、必要時に全体停止する
- */
 int	start_simulation(t_philo *philos, t_info *info)
 {
 	if (!philos || !info || !info->pids)

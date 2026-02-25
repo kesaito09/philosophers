@@ -1,30 +1,17 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   setup_init.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 20:20:00 by codex            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "setup_contract.h"
-
+#include "bonus_presentation.h"
+#include "bonus_infra.h"
+#include <stdlib.h>
 static int	init_info_state_sem(t_info *info)
 {
-	info->sem_state = sem_open_wrapper(SEM_STATE, 1);
-	if (!info->sem_state)
+	info->state_lock = sem_open_wrapper(SEM_STATE, 1);
+	if (!info->state_lock)
 		return (FAILURE);
 	return (SUCCESS);
 }
-
 static int	init_info_resources(t_info *info)
 {
 	int	sit_slots;
-
-	sit_slots = info->num_of_philo - 1;
+	sit_slots = info->num_of_philo / 2;
 	if (sit_slots <= 0)
 		sit_slots = 1;
 	info->forks = sem_open_wrapper(SEM_FORKS, info->num_of_philo);
@@ -33,16 +20,14 @@ static int	init_info_resources(t_info *info)
 	info->sem_sit = sem_open_wrapper(SEM_SIT, sit_slots);
 	if (!info->sem_sit)
 		return (cleanup_semaphores(info), FAILURE);
-	info->sem_write = sem_open_wrapper(SEM_WRITE, 1);
-	if (!info->sem_write)
+	info->write_lock = sem_open_wrapper(SEM_WRITE, 1);
+	if (!info->write_lock)
 		return (cleanup_semaphores(info), FAILURE);
 	return (SUCCESS);
 }
-
 static t_info	*init_info(int ac, char **av)
 {
 	t_info	*info;
-
 	info = ft_calloc(1, sizeof(t_info));
 	if (!info)
 		return (NULL);
@@ -56,11 +41,9 @@ static t_info	*init_info(int ac, char **av)
 	info->start_time = 0;
 	return (info);
 }
-
 static void	set_initial_meal_times(t_philo *philos, t_info *info)
 {
 	int	i;
-
 	info->start_time = get_time_now();
 	i = 0;
 	while (i < info->num_of_philo)
@@ -69,7 +52,6 @@ static void	set_initial_meal_times(t_philo *philos, t_info *info)
 		i++;
 	}
 }
-
 int	initialize_simulation(int ac, char **av, t_philo **philos, t_info **info)
 {
 	if (!philos || !info)

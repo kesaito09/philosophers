@@ -1,22 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   setup_philo.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/22 20:20:00 by codex             #+#    #+#             */
-/*   Updated: 2026/02/22 21:42:15 by kesaitou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "setup_contract.h"
-
+#include "bonus_presentation.h"
+#include "bonus_infra.h"
+#include <stdlib.h>
 static char	*build_meal_sem_name(int id)
 {
 	char	*id_str;
 	char	*name;
-
 	id_str = ft_itoa(id);
 	if (!id_str)
 		return (NULL);
@@ -24,7 +12,6 @@ static char	*build_meal_sem_name(int id)
 	free(id_str);
 	return (name);
 }
-
 static int	init_single_philo(t_philo *philo, t_info *info, int index)
 {
 	philo->id = index + 1;
@@ -41,13 +28,15 @@ static int	init_single_philo(t_philo *philo, t_info *info, int index)
 		philo->meal_sem_name = NULL;
 		return (FAILURE);
 	}
+	philo->left_fork = info->forks;
+	philo->right_fork = info->forks;
+	philo->last_eat_lock = philo->sem_meal;
+	philo->ops = get_domain_ops();
 	return (SUCCESS);
 }
-
 static void	destroy_partial_philos(t_philo *philos, int count)
 {
 	int	i;
-
 	if (!philos)
 		return ;
 	i = 0;
@@ -64,12 +53,10 @@ static void	destroy_partial_philos(t_philo *philos, int count)
 	}
 	free(philos);
 }
-
 t_philo	*init_philo(t_info *info)
 {
 	t_philo	*philos;
 	int		i;
-
 	if (!info)
 		return (NULL);
 	philos = ft_calloc((size_t)info->num_of_philo, sizeof(t_philo));
