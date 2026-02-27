@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_infra.h"
+#include "../include/philo_infra.h"
 
 int	ops_log_action(t_philo *self, t_state state)
 {

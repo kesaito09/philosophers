@@ -1,47 +1,61 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 17:17:44 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 17:18:20 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/27 05:48:44 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 05:48:49 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_infra.h"
-#include <stdint.h>
 #include <stdlib.h>
 
-void	*ft_memset(void *s, int c, size_t n)
+static int	count_len(int nbr)
 {
-	size_t			i;
-	unsigned char	*p;
-	unsigned char	uc;
+	int		len;
+	long	n;
 
-	i = 0;
-	p = s;
-	uc = c;
-	while (i < n)
+	len = 0;
+	n = nbr;
+	if (n <= 0)
 	{
-		p[i] = uc;
-		i++;
+		len++;
+		n = -n;
 	}
-	return (s);
+	while (n)
+	{
+		len++;
+		n /= 10;
+	}
+	return (len);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+char	*ft_itoa(int n)
 {
-	size_t	total_size;
-	void	*arr;
+	long	num;
+	char	*arr;
+	int		len;
 
-	if (size != 0 && nmemb > SIZE_MAX / size)
-		return (NULL);
-	total_size = nmemb * size;
-	arr = malloc(total_size);
+	num = n;
+	len = count_len(n);
+	arr = malloc(sizeof(char) * (len + 1));
 	if (!arr)
 		return (NULL);
-	ft_memset(arr, 0, total_size);
+	arr[len] = '\0';
+	if (num == 0)
+		arr[0] = '0';
+	if (num < 0)
+	{
+		arr[0] = '-';
+		num = -num;
+	}
+	while (num)
+	{
+		arr[--len] = (num % 10) + '0';
+		num /= 10;
+	}
 	return (arr);
 }

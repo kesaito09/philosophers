@@ -1,28 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_ops_sync.c                                   :+:      :+:    :+:   */
+/*   philo_ops_core.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 17:17:03 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 17:17:11 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/27 08:21:03 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 08:21:08 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_infra.h"
+#include <errno.h>
 
-void	ops_lock_acquire(void *lock)
+int	retry_sem_wait(sem_t *sem)
 {
-	sync_take(lock);
+	while (sem_wait(sem) == -1)
+	{
+		if (errno != EINTR)
+			return (FAILURE);
+	}
+	return (SUCCESS);
 }
 
-void	ops_lock_release(void *lock)
+int	ops_log_action(t_philo *self, t_state state)
 {
-	sync_release(lock);
+	return (logger(self, state));
 }
 
-int	ops_should_stop(t_philo *self)
+long	ops_get_time(void)
 {
-	return (is_simulation_finished(self));
+	return (get_time_now());
+}
+
+void	ops_sleep_ms(t_philo *self, long duration_ms)
+{
+	philo_usleep(self, duration_ms);
 }

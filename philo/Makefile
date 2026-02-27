@@ -25,13 +25,19 @@ SRCS = \
 	infrastructure/philo_resource_locks.c
 
 OBJS = $(SRCS:.c=.o)
+HEADERS = \
+	include/philo_app.h \
+	include/philo_domain.h \
+	include/philo_infra.h \
+	include/philo_presentation.h \
+	include/philo_types.h
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
 
-%.o: %.c
+%.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

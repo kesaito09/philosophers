@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 16:54:29 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 22:05:22 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/27 04:56:06 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 06:02:23 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,20 @@
 # include "./philo_types.h"
 # include <stddef.h>
 
-void			*sync_create(void);
-void			sync_destroy(void *lock);
-void			sync_take(void *lock);
-void			sync_release(void *lock);
-
-long			get_time_now(void);
-int				philo_usleep(t_philo *philo, long duration_ms);
+sem_t			*sem_open_wrapper(char *sem_name, int n);
+int				sem_unlink_wrapper(char *sem_name);
+int				cleanup_semaphores(t_info *info);
+int				retry_sem_wait(sem_t *sem);
 bool			is_simulation_finished(t_philo *philo);
+void			set_simulation_stop(t_info *info);
+long			get_time_now(void);
+void			philo_usleep(t_philo *philo, long duration_ms);
 int				logger(t_philo *philo, t_state state);
-
-void			**infra_create_forks(int count);
-void			infra_destroy_forks(void **forks, int count);
-int				infra_init_info_locks(t_info *info);
-void			infra_destroy_info_locks(t_info *info);
-int				infra_init_philo_lock(t_philo *philo);
-void			infra_destroy_philo_locks(t_philo *philos, int count);
-
 t_domain_ops	*get_domain_ops(void);
 void			*ft_calloc(size_t nmemb, size_t size);
-
+void			*ft_memcpy(void *dest, const void *src, size_t n);
+void			*ft_memset(void *s, int c, size_t n);
+size_t			ft_strlen(const char *str);
+char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_itoa(int n);
 #endif

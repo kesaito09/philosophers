@@ -1,10 +1,24 @@
-#include "philo_types.h"
-#include "philo_infra.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_parser.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/25 22:36:23 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/25 22:39:39 by kesaitou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/philo_infra.h"
+#include "../include/philo_types.h"
 #include <limits.h>
+
 static int	parse_atol(const char *s, long *out)
 {
 	unsigned long	value;
 	int				i;
+
 	if (!s || !*s)
 		return (FAILURE);
 	i = 0;
@@ -27,9 +41,11 @@ static int	parse_atol(const char *s, long *out)
 	*out = (long)value;
 	return (SUCCESS);
 }
+
 static int	parse_num_of_philo(const char *arg, t_info *info)
 {
 	long	value;
+
 	if (parse_atol(arg, &value) == FAILURE)
 		return (FAILURE);
 	if (value > INT_MAX)
@@ -37,6 +53,7 @@ static int	parse_num_of_philo(const char *arg, t_info *info)
 	info->num_of_philo = (int)value;
 	return (SUCCESS);
 }
+
 static int	parse_time_values(char **av, t_info *info)
 {
 	if (parse_atol(av[2], &info->time_to_die) == FAILURE)
@@ -47,6 +64,7 @@ static int	parse_time_values(char **av, t_info *info)
 		return (FAILURE);
 	return (SUCCESS);
 }
+
 static int	parse_must_eat(int ac, char **av, t_info *info)
 {
 	if (ac == 6)
@@ -54,6 +72,7 @@ static int	parse_must_eat(int ac, char **av, t_info *info)
 	info->num_must_eat = UNSET_MUST_EAT;
 	return (SUCCESS);
 }
+
 int	parse_input(int ac, char **av, t_info *info)
 {
 	if (!info || !av)

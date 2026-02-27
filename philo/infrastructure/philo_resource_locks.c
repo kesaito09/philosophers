@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_infra.h"
+#include "../include/philo_infra.h"
 
 int	infra_init_info_locks(t_info *info)
 {

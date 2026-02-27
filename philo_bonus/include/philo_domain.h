@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/27 04:55:39 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 04:55:40 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/27 04:56:03 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 06:01:47 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,15 @@ struct						s_domain_ops
 {
 	int						(*log_action)(t_philo *self, t_state state);
 	long					(*get_time)(void);
-	int						(*sleep_ms)(t_philo *self, long duration_ms);
-	int						(*take_forks)(t_philo *self, void **first,
-								void **second);
-	void					(*drop_forks)(t_philo *self, void *first,
-							void *second);
+	void					(*sleep_ms)(t_philo *self, long duration_ms);
+	int						(*take_forks)(t_philo *self);
+	void					(*drop_forks)(t_philo *self);
 	void					(*lock_acquire)(void *lock);
 	void					(*lock_release)(void *lock);
-	int						(*should_stop)(t_philo *self);
+	bool					(*should_stop)(t_philo *self);
 };
 
-void						*philo_routine(void *arg);
 int							domain_philo_routine(t_philo *philo);
+int							domain_philo_eat(t_philo *philo);
 
 #endif

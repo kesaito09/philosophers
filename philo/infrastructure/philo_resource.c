@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_infra.h"
+#include "../include/philo_infra.h"
 #include <stdlib.h>
 
 void	infra_destroy_forks(void **forks, int count)

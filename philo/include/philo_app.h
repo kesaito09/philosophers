@@ -12,7 +12,7 @@
 
 #ifndef PHILO_APP_H
 # define PHILO_APP_H
-# include "philo_types.h"
+# include "./philo_types.h"
 
 int		start_simulation(t_philo *philos, t_info *info);
 int		monitoring(t_philo *philos, t_info *info);

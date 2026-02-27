@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_app.h"
-#include "philo_infra.h"
-#include "philo_types.h"
+#include "../include/philo_app.h"
+#include "../include/philo_infra.h"
+#include "../include/philo_types.h"
 
 void	set_simulation_stop(t_info *info)
 {

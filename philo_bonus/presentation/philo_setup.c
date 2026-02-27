@@ -1,6 +1,19 @@
-#include "bonus_presentation.h"
-#include "bonus_infra.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_setup.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/27 05:45:14 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 05:45:33 by kesaitou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/philo_presentation.h"
+#include "../include/philo_infra.h"
 #include <stdlib.h>
+
 static int	init_info_state_sem(t_info *info)
 {
 	info->state_lock = sem_open_wrapper(SEM_STATE, 1);
@@ -8,6 +21,7 @@ static int	init_info_state_sem(t_info *info)
 		return (FAILURE);
 	return (SUCCESS);
 }
+
 static int	init_info_resources(t_info *info)
 {
 	int	sit_slots;
@@ -25,6 +39,7 @@ static int	init_info_resources(t_info *info)
 		return (cleanup_semaphores(info), FAILURE);
 	return (SUCCESS);
 }
+
 static t_info	*init_info(int ac, char **av)
 {
 	t_info	*info;
@@ -41,6 +56,7 @@ static t_info	*init_info(int ac, char **av)
 	info->start_time = 0;
 	return (info);
 }
+
 static void	set_initial_meal_times(t_philo *philos, t_info *info)
 {
 	int	i;
@@ -52,7 +68,8 @@ static void	set_initial_meal_times(t_philo *philos, t_info *info)
 		i++;
 	}
 }
-int	initialize_simulation(int ac, char **av, t_philo **philos, t_info **info)
+
+int	initializer(int ac, char **av, t_philo **philos, t_info **info)
 {
 	if (!philos || !info)
 		return (FAILURE);

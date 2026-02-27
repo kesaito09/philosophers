@@ -1,37 +1,42 @@
 NAME = philo_bonus
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread -DPHILO_BONUS -Iinclude
+CFLAGS = -Wall -Werror -Wextra -pthread -Iinclude
 LDFLAGS = -pthread
 
 SRCS = \
-	presentation/entry_main.c \
-	presentation/setup_parse.c \
-	presentation/setup_init.c \
-	presentation/setup_philo.c \
-	presentation/setup_cleanup.c \
-	application/parent_runtime.c \
-	application/child_runtime.c \
-	domain/child_routine.c \
+	presentation/philo_main.c \
+	presentation/philo_parser.c \
+	presentation/philo_setup.c \
+	presentation/philo_setup_philo.c \
+	presentation/philo_cleanup.c \
+	application/philo_simulation.c \
+	application/philo_monitor.c \
 	domain/domain_philo_routine.c \
 	domain/domain_philo_eat.c \
-	infrastructure/infra_semaphore.c \
-	infrastructure/infra_time.c \
-	infrastructure/infra_logger.c \
-	infrastructure/infra_libs1.c \
-	infrastructure/infra_libs2.c \
-	infrastructure/infra_ops.c \
-	infrastructure/infra_ops_core.c \
-	infrastructure/infra_ops_forks.c \
-	infrastructure/infra_ops_sync.c
+	infrastructure/philo_resource.c \
+	infrastructure/philo_time.c \
+	infrastructure/philo_logger.c \
+	infrastructure/philo_utils.c \
+	infrastructure/philo_utils2.c \
+	infrastructure/philo_ops.c \
+	infrastructure/philo_ops_core.c \
+	infrastructure/philo_ops_forks.c \
+	infrastructure/philo_ops_sync.c
 
 OBJS = $(SRCS:.c=.o)
+HEADERS = \
+	include/philo_app.h \
+	include/philo_domain.h \
+	include/philo_infra.h \
+	include/philo_presentation.h \
+	include/philo_types.h
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(NAME)
 
-%.o: %.c
+%.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

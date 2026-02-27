@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_domain.h"
-#include "philo_types.h"
+#include "../include/philo_domain.h"
+#include "../include/philo_types.h"
 
 static void	*first_fork(t_philo *philo)
 {

@@ -5,19 +5,33 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 16:54:55 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 16:55:07 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/27 04:56:10 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 08:30:47 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_TYPES_H
 # define PHILO_TYPES_H
+
 # include "./philo_domain.h"
 # include <pthread.h>
+# include <semaphore.h>
 # include <stdbool.h>
+# include <sys/types.h>
+
 # define SUCCESS 1
 # define FAILURE -1
 # define UNSET_MUST_EAT -1
+
+# define EXIT_DONE 0
+# define EXIT_DEAD 1
+# define EXIT_ERROR 2
+
+# define SEM_FORKS "/forks"
+# define SEM_SIT "/sit"
+# define SEM_WRITE "/write"
+# define SEM_STATE "/state"
+# define SEM_MEAL_PREFIX "/meal_"
 
 typedef struct s_info
 {
@@ -28,9 +42,11 @@ typedef struct s_info
 	long			num_must_eat;
 	long			start_time;
 	bool			is_stop_sim;
-	void			*state_lock;
-	void			*write_lock;
-	void			**forks;
+	sem_t			*state_lock;
+	sem_t			*write_lock;
+	sem_t			*forks;
+	sem_t			*sem_sit;
+	pid_t			*pids;
 }					t_info;
 
 typedef struct s_philo
@@ -38,11 +54,9 @@ typedef struct s_philo
 	int				id;
 	long			eat_count;
 	long			time_last_eat;
-	pthread_t		thread;
-	void			*left_fork;
-	void			*right_fork;
 	void			*last_eat_lock;
 	t_info			*info;
 	t_domain_ops	*ops;
+	char			*meal_sem_name;
 }					t_philo;
 #endif

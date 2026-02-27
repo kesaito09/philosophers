@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_app.h"
-#include "philo_domain.h"
-#include "philo_infra.h"
-#include "philo_types.h"
+#include "../include/philo_app.h"
+#include "../include/philo_domain.h"
+#include "../include/philo_infra.h"
+#include "../include/philo_types.h"
 
 static int	join_philosophers_thread(t_philo *philos, t_info *info)
 {

@@ -6,13 +6,13 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:45:09 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 17:04:28 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/27 06:10:42 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_types.h"
+#include "../include/philo_types.h"
 
-static int	wait_single_philo(t_philo *philo)
+static int	wait_childrensingle_philo(t_philo *philo)
 {
 	philo->ops->lock_acquire(philo->left_fork);
 	if (philo->ops->log_action(philo, STATE_TAKE_FORK) == FAILURE)
@@ -65,6 +65,6 @@ int	domain_philo_eat(t_philo *philo)
 	if (!philo || !philo->info || !philo->ops)
 		return (FAILURE);
 	if (philo->info->num_of_philo == 1)
-		return (wait_single_philo(philo));
+		return (wait_childrensingle_philo(philo));
 	return (eat_with_forks(philo));
 }

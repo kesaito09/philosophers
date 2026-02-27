@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_infra.h"
+#include "../include/philo_infra.h"
 #include <pthread.h>
 #include <stdlib.h>
 

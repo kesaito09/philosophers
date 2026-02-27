@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/25 16:39:15 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 22:45:36 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/02/27 05:48:32 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/02/27 05:48:34 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,24 @@
 #include "../include/philo_presentation.h"
 #include <stdlib.h>
 
-static void	set_initial_meal_times(t_philo *philos, t_info *info)
+void	destroy_philos_by_count(t_philo *philos, int count)
 {
 	int	i;
 
-	info->start_time = get_time_now();
+	if (!philos)
+		return ;
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < count)
 	{
-		philos[i].time_last_eat = info->start_time;
+		if (philos[i].last_eat_lock)
+			sem_close((sem_t *)philos[i].last_eat_lock);
+		if (philos[i].meal_sem_name)
+		{
+			sem_unlink_wrapper(philos[i].meal_sem_name);
+			free(philos[i].meal_sem_name);
+		}
 		i++;
 	}
-}
-
-int	initializer(int ac, char **av, t_philo **philos, t_info **info)
-{
-	if (!philos || !info)
-		return (FAILURE);
-	*info = init_info(ac, av);
-	if (!*info)
-		return (FAILURE);
-	*philos = init_philo(*info);
-	if (!*philos)
-		return (destroy_simulation(NULL, *info), *info = NULL, FAILURE);
-	set_initial_meal_times(*philos, *info);
-	return (SUCCESS);
-}
-
-static void	destroy_philos(t_philo *philos, t_info *info)
-{
-	if (!philos || !info)
-		return ;
-	infra_destroy_philo_locks(philos, info->num_of_philo);
 	free(philos);
 }
 
@@ -53,13 +39,14 @@ static void	destroy_info(t_info *info)
 {
 	if (!info)
 		return ;
-	infra_destroy_forks(info->forks, info->num_of_philo);
-	infra_destroy_info_locks(info);
+	cleanup_semaphores(info);
+	free(info->pids);
 	free(info);
 }
 
 void	destroy_simulation(t_philo *philos, t_info *info)
 {
-	destroy_philos(philos, info);
+	if (info)
+		destroy_philos_by_count(philos, info->num_of_philo);
 	destroy_info(info);
 }

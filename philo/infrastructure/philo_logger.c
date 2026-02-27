@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_infra.h"
-#include "philo_types.h"
-#include "philo_domain.h"
+#include "../include/philo_infra.h"
+#include "../include/philo_types.h"
+#include "../include/philo_domain.h"
 #include <stdio.h>
 
 static const char	*get_message(t_state state)
