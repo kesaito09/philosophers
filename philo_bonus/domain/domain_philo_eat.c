@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   domain_philo_eat.c                                 :+:      :+:    :+:   */
+/*   philo_eat.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -51,11 +51,11 @@ static int	eat_with_forks(t_philo *philo)
 	return (SUCCESS);
 }
 
-int	domain_philo_eat(t_philo *philo)
+int	philo_eat(t_philo *philo)
 {
 	if (!philo || !philo->info || !philo->ops)
 		return (FAILURE);
 	if (philo->info->num_of_philo == 1)
 		return (wait_childrensingle_philo(philo));
-	return (eat_with_forks(philo));
+	return (eat_with_f
 }
