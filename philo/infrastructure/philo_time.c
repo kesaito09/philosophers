@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 17:17:33 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/28 14:59:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/01 00:25:33 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	philo_usleep(t_philo *philo, long duration_ms)
 	{
 		if (get_time_now() - start >= duration_ms)
 			break ;
-		usleep(500);
+		usleep(100);
 	}
 	return (SUCCESS);
 }

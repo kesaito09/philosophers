@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 04:55:39 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 04:55:40 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/01 00:18:41 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ struct						s_domain_ops
 							void *second);
 	void					(*lock_acquire)(void *lock);
 	void					(*lock_release)(void *lock);
-	int						(*should_stop)(t_philo *self);
+	bool					(*should_stop)(t_philo *self);
 };
 
 void						*philo_routine(void *arg);
