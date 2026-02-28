@@ -6,12 +6,12 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 22:36:05 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 22:36:10 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:15:20 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philo_presentation.h"
 #include "../include/philo_infra.h"
+#include "../include/philo_presentation.h"
 #include <stdlib.h>
 
 static int	init_info_resources(t_info *info)
@@ -30,6 +30,7 @@ static int	init_info_resources(t_info *info)
 t_info	*init_info(int ac, char **av)
 {
 	t_info	*info;
+
 	info = ft_calloc(1, sizeof(t_info));
 	if (!info)
 		return (NULL);
@@ -55,10 +56,12 @@ static int	init_single_philo(t_philo *philo, t_info *info, int index)
 		return (FAILURE);
 	return (SUCCESS);
 }
+
 t_philo	*init_philo(t_info *info)
 {
 	t_philo	*philos;
 	int		i;
+
 	philos = ft_calloc((size_t)info->num_of_philo, sizeof(t_philo));
 	if (!philos)
 		return (NULL);

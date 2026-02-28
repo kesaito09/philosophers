@@ -18,9 +18,7 @@ SRCS = \
 	infrastructure/philo_utils.c \
 	infrastructure/philo_time.c \
 	infrastructure/philo_ops.c \
-	infrastructure/philo_ops_core.c \
 	infrastructure/philo_ops_forks.c \
-	infrastructure/philo_ops_sync.c \
 	infrastructure/philo_resource.c \
 	infrastructure/philo_resource_locks.c
 

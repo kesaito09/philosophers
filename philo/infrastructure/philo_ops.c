@@ -6,33 +6,32 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 17:38:49 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 17:53:47 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/02/28 15:06:19 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_infra.h"
 
-int				ops_log_action(t_philo *self, t_state state);
-long			ops_get_time(void);
-int				ops_sleep_ms(t_philo *self, long duration_ms);
+int				logger(t_philo *philo, t_state state);
+void			sync_take(void *lock);
+void			sync_release(void *lock);
 int				ops_take_forks(t_philo *self, void **first, void **second);
 void			ops_drop_forks(t_philo *self, void *first, void *second);
-void			ops_lock_acquire(void *lock);
-void			ops_lock_release(void *lock);
-int				ops_should_stop(t_philo *self);
+long			get_time_now(void);
+int				philo_usleep(t_philo *philo, long duration_ms);
+bool			is_simulation_finished(t_philo *philo);
 
 t_domain_ops	*get_domain_ops(void)
 {
-	static t_domain_ops	domain_ops = {
-		.log_action = ops_log_action,
-		.get_time = ops_get_time,
-		.sleep_ms = ops_sleep_ms,
+	static t_domain_ops domain_ops = {
+		.log_action = logger,
+		.get_time = get_time_now,
+		.sleep_ms = philo_usleep,
 		.take_forks = ops_take_forks,
 		.drop_forks = ops_drop_forks,
-		.lock_acquire = ops_lock_acquire,
-		.lock_release = ops_lock_release,
-		.should_stop = ops_should_stop,
+		.lock_acquire = sync_take,
+		.lock_release = sync_release,
+		.should_stop = is_simulation_finished,
 	};
-
 	return (&domain_ops);
 }
