@@ -6,14 +6,14 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 08:30:59 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 08:32:09 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/01 02:51:15 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_domain.h"
 #include "../include/philo_types.h"
 
-int	domain_is_sated(t_philo *philo)
+int	is_philo_sated(t_philo *philo)
 {
 	int	sated;
 
@@ -27,7 +27,7 @@ int	domain_is_sated(t_philo *philo)
 	return (FAILURE);
 }
 
-static int	sleep_state(t_philo *philo)
+static int	philo_sleep(t_philo *philo)
 {
 	if (philo->ops->log_action(philo, STATE_SLEEP) == FAILURE)
 		return (FAILURE);
@@ -35,7 +35,7 @@ static int	sleep_state(t_philo *philo)
 	return (SUCCESS);
 }
 
-static int	think_state(t_philo *philo)
+static int	philo_think(t_philo *philo)
 {
 	long	think_time;
 	int		group;
@@ -61,13 +61,13 @@ int	domain_philo_routine(t_philo *philo)
 		philo->ops->sleep_ms(philo, philo->info->time_to_eat / 2);
 	while (!philo->ops->should_stop(philo))
 	{
-		if (domain_philo_eat(philo) == FAILURE)
+		if (philo_eat(philo) == FAILURE)
 			return (FAILURE);
-		if (domain_is_sated(philo) == SUCCESS)
+		if (is_philo_sated(philo) == SUCCESS)
 			break ;
-		if (sleep_state(philo) == FAILURE)
+		if (philo_sleep(philo) == FAILURE)
 			return (FAILURE);
-		if (think_state(philo) == FAILURE)
+		if (philo_think(philo) == FAILURE)
 			return (FAILURE);
 	}
 	return (SUCCESS);

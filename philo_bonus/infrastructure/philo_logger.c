@@ -1,7 +1,20 @@
-#include "../include/philo_infra.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_logger.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/01 03:05:41 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/03/01 03:05:47 by kesaitou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/philo_domain.h"
+#include "../include/philo_infra.h"
 #include <errno.h>
 #include <stdio.h>
+
 static const char	*get_message(t_state state)
 {
 	if (state == STATE_TAKE_FORK)

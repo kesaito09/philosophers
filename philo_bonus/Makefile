@@ -12,7 +12,7 @@ SRCS = \
 	application/philo_simulation.c \
 	application/philo_monitor.c \
 	domain/domain_philo_routine.c \
-	domain/domain_philo_eat.c \
+	domain/philo_eat.c \
 	infrastructure/philo_resource.c \
 	infrastructure/philo_time.c \
 	infrastructure/philo_logger.c \

@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 04:56:03 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 06:01:47 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/01 02:50:30 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,6 @@ struct						s_domain_ops
 };
 
 int							domain_philo_routine(t_philo *philo);
-int							domain_philo_eat(t_philo *philo);
+int							philo_eat(t_philo *philo);
 
 #endif
