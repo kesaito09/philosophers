@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 22:36:23 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 22:39:39 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/02 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,17 @@ static int	parse_num_of_philo(const char *arg, t_info *info)
 		return (FAILURE);
 	if (value > INT_MAX)
 		return (FAILURE);
-	info->num_of_philo = (int)value;
+	info->rule.num_of_philo = (int)value;
 	return (SUCCESS);
 }
 
 static int	parse_time_values(char **av, t_info *info)
 {
-	if (parse_atol(av[2], &info->time_to_die) == FAILURE)
+	if (parse_atol(av[2], &info->rule.time_to_die) == FAILURE)
 		return (FAILURE);
-	if (parse_atol(av[3], &info->time_to_eat) == FAILURE)
+	if (parse_atol(av[3], &info->rule.time_to_eat) == FAILURE)
 		return (FAILURE);
-	if (parse_atol(av[4], &info->time_to_sleep) == FAILURE)
+	if (parse_atol(av[4], &info->rule.time_to_sleep) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
 }
@@ -68,8 +68,8 @@ static int	parse_time_values(char **av, t_info *info)
 static int	parse_must_eat(int ac, char **av, t_info *info)
 {
 	if (ac == 6)
-		return (parse_atol(av[5], &info->num_must_eat));
-	info->num_must_eat = UNSET_MUST_EAT;
+		return (parse_atol(av[5], &info->rule.num_must_eat));
+	info->rule.num_must_eat = UNSET_MUST_EAT;
 	return (SUCCESS);
 }
 

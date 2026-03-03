@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:39:15 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 22:45:36 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/02 17:54:07 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,20 @@
 #include "../include/philo_presentation.h"
 #include <stdlib.h>
 
-static void	set_initial_meal_times(t_philo *philos, t_info *info)
+static void	set_initial_meal_times(t_philo_handler *philos, t_info *info)
 {
 	int	i;
 
 	info->start_time = get_time_now();
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < info->rule.num_of_philo)
 	{
-		philos[i].time_last_eat = info->start_time;
+		philos[i].philo.time_last_eat = info->start_time;
 		i++;
 	}
 }
 
-int	initializer(int ac, char **av, t_philo **philos, t_info **info)
+int	initializer(int ac, char **av, t_philo_handler **philos, t_info **info)
 {
 	if (!philos || !info)
 		return (FAILURE);
@@ -41,11 +41,11 @@ int	initializer(int ac, char **av, t_philo **philos, t_info **info)
 	return (SUCCESS);
 }
 
-static void	destroy_philos(t_philo *philos, t_info *info)
+static void	destroy_philos(t_philo_handler *philos, t_info *info)
 {
 	if (!philos || !info)
 		return ;
-	infra_destroy_philo_locks(philos, info->num_of_philo);
+	infra_destroy_philo_locks(philos, info->rule.num_of_philo);
 	free(philos);
 }
 
@@ -53,12 +53,12 @@ static void	destroy_info(t_info *info)
 {
 	if (!info)
 		return ;
-	infra_destroy_forks(info->forks, info->num_of_philo);
+	infra_destroy_forks(info->forks, info->rule.num_of_philo);
 	infra_destroy_info_locks(info);
 	free(info);
 }
 
-void	destroy_simulation(t_philo *philos, t_info *info)
+void	destroy_simulation(t_philo_handler *philos, t_info *info)
 {
 	destroy_philos(philos, info);
 	destroy_info(info);

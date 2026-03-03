@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 17:22:09 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 17:22:26 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/02 18:09:43 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,18 @@ void	infra_destroy_info_locks(t_info *info)
 	sync_destroy(info->write_lock);
 }
 
-int	infra_init_philo_lock(t_philo *philo)
+int	infra_init_philo_lock(t_philo_handler *handler)
 {
-	philo->last_eat_lock = sync_create();
-	if (!philo->last_eat_lock)
+	handler->last_eat_lock = sync_create();
+	if (!handler->last_eat_lock)
 		return (FAILURE);
 	return (SUCCESS);
 }
 
-void	infra_destroy_philo_locks(t_philo *philos, int count)
+void	infra_destroy_philo_locks(t_philo_handler *philos, int count)
 {
 	int	i;
+
 	i = 0;
 	while (i < count)
 	{

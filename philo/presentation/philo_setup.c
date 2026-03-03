@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 22:36:05 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/28 15:15:20 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/02 18:09:43 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	init_info_resources(t_info *info)
 {
 	if (infra_init_info_locks(info) == FAILURE)
 		return (FAILURE);
-	info->forks = infra_create_forks(info->num_of_philo);
+	info->forks = infra_create_forks(info->rule.num_of_philo);
 	if (!info->forks)
 	{
 		infra_destroy_info_locks(info);
@@ -43,30 +43,31 @@ t_info	*init_info(int ac, char **av)
 	return (info);
 }
 
-static int	init_single_philo(t_philo *philo, t_info *info, int index)
+static int	init_single_philo(t_philo_handler *handler, t_info *info, int index)
 {
-	philo->id = index + 1;
-	philo->eat_count = 0;
-	philo->time_last_eat = 0;
-	philo->info = info;
-	philo->left_fork = info->forks[index];
-	philo->right_fork = info->forks[(index + 1) % info->num_of_philo];
-	philo->ops = get_domain_ops();
-	if (infra_init_philo_lock(philo) == FAILURE)
+	handler->philo.id = index + 1;
+	handler->philo.eat_count = 0;
+	handler->philo.time_last_eat = 0;
+	handler->philo.rule = &info->rule;
+	handler->philo.ops = get_domain_ops();
+	handler->info = info;
+	handler->left_fork = info->forks[index];
+	handler->right_fork = info->forks[(index + 1) % info->rule.num_of_philo];
+	if (infra_init_philo_lock(handler) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
 }
 
-t_philo	*init_philo(t_info *info)
+t_philo_handler	*init_philo(t_info *info)
 {
-	t_philo	*philos;
-	int		i;
+	t_philo_handler	*philos;
+	int			i;
 
-	philos = ft_calloc((size_t)info->num_of_philo, sizeof(t_philo));
+	philos = ft_calloc((size_t)info->rule.num_of_philo, sizeof(t_philo_handler));
 	if (!philos)
 		return (NULL);
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < info->rule.num_of_philo)
 	{
 		if (init_single_philo(&philos[i], info, i) == FAILURE)
 			return (infra_destroy_philo_locks(philos, i), free(philos), NULL);
