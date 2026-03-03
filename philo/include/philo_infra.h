@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:54:29 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/25 22:05:22 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/02 18:09:43 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stddef.h>
 
 void			*sync_create(void);
+
 void			sync_destroy(void *lock);
 void			sync_take(void *lock);
 void			sync_release(void *lock);
@@ -29,8 +30,8 @@ void			**infra_create_forks(int count);
 void			infra_destroy_forks(void **forks, int count);
 int				infra_init_info_locks(t_info *info);
 void			infra_destroy_info_locks(t_info *info);
-int				infra_init_philo_lock(t_philo *philo);
-void			infra_destroy_philo_locks(t_philo *philos, int count);
+int				infra_init_philo_lock(t_philo_handler *handler);
+void			infra_destroy_philo_locks(t_philo_handler *philos, int count);
 
 t_domain_ops	*get_domain_ops(void);
 void			*ft_calloc(size_t nmemb, size_t size);
