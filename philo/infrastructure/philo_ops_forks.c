@@ -53,12 +53,6 @@ int	ops_take_fork(t_philo *self)
 		return (FAILURE);
 	}
 	sync_take(second_fork(handler));
-	if (logger(self, STATE_TAKE_FORK) == FAILURE)
-	{
-		sync_release(second_fork(handler));
-		sync_release(first_fork(handler));
-		return (FAILURE);
-	}
 	return (SUCCESS);
 }
 

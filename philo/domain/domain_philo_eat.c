@@ -27,6 +27,7 @@ static int	eat_with_forks(t_philo *philo)
 	if (philo->ops->take_forks(philo) == FAILURE)
 		return (FAILURE);
 	if (philo->ops->update_meal(philo) == FAILURE
+		|| philo->ops->log_action(philo, STATE_TAKE_FORK) == FAILURE
 		|| philo->ops->log_action(philo, STATE_EAT) == FAILURE)
 	{
 		philo->ops->drop_forks(philo);

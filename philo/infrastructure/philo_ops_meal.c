@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 00:00:00 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/02 18:09:43 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/03 13:08:30 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ops_update_meal(t_philo *self)
 bool	ops_is_sated(t_philo *self)
 {
 	t_philo_handler	*handler;
-	bool		sated;
+	bool			sated;
 
 	if (!self)
 		return (false);

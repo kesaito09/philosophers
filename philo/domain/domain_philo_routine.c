@@ -6,13 +6,13 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:45:04 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/02 18:29:29 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/03 13:47:20 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_domain.h"
 
-int	philo_eat(t_philo *philo);
+int			philo_eat(t_philo *philo);
 
 int	is_philo_sated(t_philo *philo)
 {
@@ -26,7 +26,7 @@ int	is_philo_sated(t_philo *philo)
 static int	delay_start(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
-		return (philo->ops->sleep_ms(philo, philo->rule->time_to_eat / 2));
+		return (philo->ops->sleep_ms(philo, philo->rule->time_to_eat - 10));
 	return (SUCCESS);
 }
 
@@ -43,6 +43,7 @@ static int	philo_think(t_philo *philo)
 {
 	long	think_time;
 	int		group;
+	long	slack;
 
 	group = philo->rule->num_of_philo % 2 + 2;
 	if (philo->ops->log_action(philo, STATE_THINK) == FAILURE)
@@ -51,8 +52,12 @@ static int	philo_think(t_philo *philo)
 			- philo->rule->time_to_sleep);
 	if (think_time < 0)
 		think_time = 0;
-	think_time += (philo->rule->time_to_die
-			- (philo->rule->time_to_eat * group)) / 5;
+	slack = (philo->rule->time_to_die - (philo->rule->time_to_eat
+					* group));
+	if (slack < 15)
+		think_time = 0;
+	else
+		think_time += slack / 2;
 	philo->ops->sleep_ms(philo, think_time);
 	return (SUCCESS);
 }

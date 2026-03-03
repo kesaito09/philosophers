@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 17:17:33 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/02 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/03 13:43:40 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,25 @@ long	get_time_now(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int	philo_usleep(t_philo *philo, long duration_ms)
+int philo_usleep(t_philo *philo, long duration_ms)
 {
-	long	start;
+    long start;
+    long remaining;
 
-	if (!philo || duration_ms <= 0)
-		return (SUCCESS);
-	start = get_time_now();
-	while (!is_simulation_finished(philo))
-	{
-		if (get_time_now() - start >= duration_ms)
-			break ;
-		usleep(100);
-	}
-	return (SUCCESS);
+    if (!philo || duration_ms <= 0)
+        return (SUCCESS);
+    start = get_time_now();
+    while (1)
+    {
+        remaining = duration_ms - (get_time_now() - start);
+        if (remaining <= 0)
+            break ;
+        if (is_simulation_finished(philo))
+            return (FAILURE);
+        if (remaining > 2)
+            usleep(500);
+        else
+            continue ;
+    }
+    return (SUCCESS);
 }
