@@ -65,25 +65,25 @@ static void	set_initial_meal_times(t_philo_handler *philos, t_info *info)
 	}
 }
 
-int	initializer(int ac, char **av, t_philo_handler **ph, t_info **info)
+int	initializer(int ac, char **av, t_philo_handler **philos, t_info **info)
 {
-	if (!ph || !info)
+	if (!philos || !info)
 		return (FAILURE);
 	*info = init_info(ac, av);
 	if (!*info)
 		return (FAILURE);
-	*ph = init_philo(*info);
-	if (!*ph)
+	*philos = init_philo(*info);
+	if (!*philos)
 		return (destroy_simulation(NULL, *info), *info = NULL, FAILURE);
 	(*info)->pids = ft_calloc((size_t)(*info)->rule.num_of_philo,
 			sizeof(pid_t));
 	if (!(*info)->pids)
 	{
-		destroy_simulation(*ph, *info);
-		*ph = NULL;
+		destroy_simulation(*philos, *info);
+		*philos = NULL;
 		*info = NULL;
 		return (FAILURE);
 	}
-	set_initial_meal_times(*ph, *info);
+	set_initial_meal_times(*philos, *info);
 	return (SUCCESS);
 }

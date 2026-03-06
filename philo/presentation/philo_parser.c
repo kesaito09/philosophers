@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philo_infra.h"
 #include "../include/philo_types.h"
 #include <limits.h>
 
@@ -31,9 +30,9 @@ static int	parse_atol(const char *s, long *out)
 	{
 		if (s[i] < '0' || s[i] > '9')
 			return (FAILURE);
-		value = value * 10 + (unsigned long)(s[i] - '0');
-		if (value > LONG_MAX)
+		if (value > ((unsigned long)LONG_MAX - (s[i] - '0')) / 10)
 			return (FAILURE);
+		value = (value * 10) + (unsigned long)(s[i] - '0');
 		i++;
 	}
 	if (value == 0)

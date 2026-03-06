@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/27 08:20:29 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/03/06 13:02:31 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/03/06 13:02:31 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,17 @@ bool	is_simulation_finished(t_philo *philo)
 	handler = (t_philo_handler *)philo;
 	if (!handler || !handler->info)
 		return (true);
-	if (retry_sem_wait(handler->info->state_lock) == FAILURE)
-		return (true);
+	sync_take(handler->info->state_lock);
 	flag = handler->info->is_stop_sim;
-	if (sem_post(handler->info->state_lock) != 0)
-		return (true);
+	sync_release(handler->info->state_lock);
 	return (flag);
 }
 
 void	set_simulation_stop(t_info *info)
 {
-	if (retry_sem_wait(info->state_lock) == FAILURE)
+	if (!info)
 		return ;
+	sync_take(info->state_lock);
 	info->is_stop_sim = true;
-	sem_post(info->state_lock);
+	sync_release(info->state_lock);
 }

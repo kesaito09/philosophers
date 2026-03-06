@@ -12,22 +12,29 @@
 
 #include "../include/philo_app.h"
 #include "../include/philo_presentation.h"
+#include <unistd.h>
+
+static int	print_error(void)
+{
+	write(2, "Error\n", 6);
+	return (1);
+}
 
 int	main(int ac, char **av)
 {
-	t_info		*info;
+	t_info			*info;
 	t_philo_handler	*philos;
 
-	if (ac != 5 && ac != 6)
-		return (1);
 	info = NULL;
 	philos = NULL;
+	if (ac != 5 && ac != 6)
+		return (print_error());
 	if (initializer(ac, av, &philos, &info) == FAILURE)
-		return (1);
+		return (print_error());
 	if (start_simulation(philos, info) == FAILURE)
 	{
 		destroy_simulation(philos, info);
-		return (1);
+		return (print_error());
 	}
 	destroy_simulation(philos, info);
 	return (0);

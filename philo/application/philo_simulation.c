@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../include/philo_app.h"
-#include "../include/philo_domain.h"
 #include "../include/philo_infra.h"
 
 static int	join_philosophers_thread(t_philo_handler *philos, t_info *info)
@@ -50,9 +49,11 @@ static int	create_philosophers_thread(t_philo_handler *philos, t_info *info)
 
 int	start_simulation(t_philo_handler *philos, t_info *info)
 {
+	if (!philos || !info)
+		return (FAILURE);
 	if (create_philosophers_thread(philos, info) == FAILURE)
 		return (FAILURE);
-	monitoring(philos, info);
+	monitoring(philos);
 	if (join_philosophers_thread(philos, info) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);

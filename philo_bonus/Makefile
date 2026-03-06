@@ -32,6 +32,7 @@ SRCS = \
 	infrastructure/philo_utils2.c \
 	infrastructure/philo_ops.c \
 	infrastructure/philo_ops_core.c \
+	infrastructure/philo_ops_meal.c \
 	infrastructure/philo_ops_forks.c \
 	infrastructure/philo_ops_sync.c
 

@@ -13,13 +13,6 @@
 #include "../include/philo_app.h"
 #include "../include/philo_infra.h"
 
-void	set_simulation_stop(t_info *info)
-{
-	sync_take(info->state_lock);
-	info->is_stop_sim = true;
-	sync_release(info->state_lock);
-}
-
 static int	is_simulation_stopped(t_info *info)
 {
 	int	stopped;
@@ -74,8 +67,13 @@ static int	check_death_and_stop(t_philo_handler *philos, t_info *info)
 	return (FAILURE);
 }
 
-int	monitoring(t_philo_handler *philos, t_info *info)
+int	monitoring(t_philo_handler *philos)
 {
+	t_info	*info;
+
+	if (!philos || !philos[0].info)
+		return (FAILURE);
+	info = philos[0].info;
 	while (!is_simulation_stopped(info))
 	{
 		if (all_philosophers_sated(philos, info) == SUCCESS)

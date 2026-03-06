@@ -21,6 +21,7 @@ void			sync_destroy(void *lock);
 void			sync_take(void *lock);
 void			sync_release(void *lock);
 
+void			set_simulation_stop(t_info *info);
 long			get_time_now(void);
 int				philo_usleep(t_philo *philo, long duration_ms);
 bool			is_simulation_finished(t_philo *philo);

@@ -27,7 +27,7 @@ static int	init_info_resources(t_info *info)
 	return (SUCCESS);
 }
 
-t_info	*init_info(int ac, char **av)
+static t_info	*init_info(int ac, char **av)
 {
 	t_info	*info;
 
@@ -43,35 +43,29 @@ t_info	*init_info(int ac, char **av)
 	return (info);
 }
 
-static int	init_single_philo(t_philo_handler *handler, t_info *info, int index)
+static void	set_initial_meal_times(t_philo_handler *philos, t_info *info)
 {
-	handler->philo.id = index + 1;
-	handler->philo.eat_count = 0;
-	handler->philo.time_last_eat = 0;
-	handler->philo.rule = &info->rule;
-	handler->philo.ops = get_domain_ops();
-	handler->info = info;
-	handler->left_fork = info->forks[index];
-	handler->right_fork = info->forks[(index + 1) % info->rule.num_of_philo];
-	if (infra_init_philo_lock(handler) == FAILURE)
-		return (FAILURE);
-	return (SUCCESS);
-}
+	int	i;
 
-t_philo_handler	*init_philo(t_info *info)
-{
-	t_philo_handler	*philos;
-	int			i;
-
-	philos = ft_calloc((size_t)info->rule.num_of_philo, sizeof(t_philo_handler));
-	if (!philos)
-		return (NULL);
+	info->start_time = get_time_now();
 	i = 0;
 	while (i < info->rule.num_of_philo)
 	{
-		if (init_single_philo(&philos[i], info, i) == FAILURE)
-			return (infra_destroy_philo_locks(philos, i), free(philos), NULL);
+		philos[i].philo.time_last_eat = info->start_time;
 		i++;
 	}
-	return (philos);
+}
+
+int	initializer(int ac, char **av, t_philo_handler **philos, t_info **info)
+{
+	if (!philos || !info)
+		return (FAILURE);
+	*info = init_info(ac, av);
+	if (!*info)
+		return (FAILURE);
+	*philos = init_philo(*info);
+	if (!*philos)
+		return (destroy_simulation(NULL, *info), *info = NULL, FAILURE);
+	set_initial_meal_times(*philos, *info);
+	return (SUCCESS);
 }

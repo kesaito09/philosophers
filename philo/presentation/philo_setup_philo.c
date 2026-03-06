@@ -5,45 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/27 05:42:09 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/03/06 13:02:31 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/03/06 13:02:31 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_infra.h"
 #include "../include/philo_presentation.h"
-#include <stdlib.h>
-
-static char	*build_meal_sem_name(int id)
-{
-	char	*id_str;
-	char	*name;
-
-	id_str = ft_itoa(id);
-	if (!id_str)
-		return (NULL);
-	name = ft_strjoin(SEM_MEAL_PREFIX, id_str);
-	free(id_str);
-	return (name);
-}
-
-static int	init_meal_lock(t_philo_handler *h)
-{
-	sem_t	*meal_lock;
-
-	h->meal_sem_name = build_meal_sem_name(h->philo.id);
-	if (!h->meal_sem_name)
-		return (FAILURE);
-	meal_lock = sem_open_wrapper(h->meal_sem_name, 1);
-	if (!meal_lock)
-	{
-		free(h->meal_sem_name);
-		h->meal_sem_name = NULL;
-		return (FAILURE);
-	}
-	h->last_eat_lock = meal_lock;
-	return (SUCCESS);
-}
 
 static void	init_common_philo(t_philo_handler *handler, t_info *info, int index)
 {
@@ -55,16 +23,20 @@ static void	init_common_philo(t_philo_handler *handler, t_info *info, int index)
 	handler->info = info;
 }
 
-static int	init_handler_resources(t_philo_handler *handler)
-{
-	return (init_meal_lock(handler));
-}
-
-static int	init_single_philo(t_philo_handler *handler,
+static int	init_handler_resources(t_philo_handler *handler,
 		t_info *info, int index)
 {
+	handler->left_fork = info->forks[index];
+	handler->right_fork = info->forks[(index + 1) % info->rule.num_of_philo];
+	if (infra_init_philo_lock(handler) == FAILURE)
+		return (FAILURE);
+	return (SUCCESS);
+}
+
+static int	init_single_philo(t_philo_handler *handler, t_info *info, int index)
+{
 	init_common_philo(handler, info, index);
-	return (init_handler_resources(handler));
+	return (init_handler_resources(handler, info, index));
 }
 
 t_philo_handler	*init_philo(t_info *info)
@@ -74,8 +46,7 @@ t_philo_handler	*init_philo(t_info *info)
 
 	if (!info)
 		return (NULL);
-	philos = ft_calloc((size_t)info->rule.num_of_philo,
-			sizeof(t_philo_handler));
+	philos = ft_calloc((size_t)info->rule.num_of_philo, sizeof(t_philo_handler));
 	if (!philos)
 		return (NULL);
 	i = 0;

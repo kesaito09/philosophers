@@ -14,18 +14,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-bool	is_simulation_finished(t_philo *philo)
-{
-	t_info	*info;
-	bool	flag;
-
-	info = (t_info *)philo->rule;
-	sync_take(info->state_lock);
-	flag = info->is_stop_sim;
-	sync_release(info->state_lock);
-	return (flag);
-}
-
 long	get_time_now(void)
 {
 	struct timeval	time;
@@ -35,25 +23,23 @@ long	get_time_now(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int philo_usleep(t_philo *philo, long duration_ms)
+int	philo_usleep(t_philo *philo, long duration_ms)
 {
-    long start;
-    long remaining;
+	long	start;
+	long	remaining;
 
-    if (!philo || duration_ms <= 0)
-        return (SUCCESS);
-    start = get_time_now();
-    while (1)
-    {
-        remaining = duration_ms - (get_time_now() - start);
-        if (remaining <= 0)
-            break ;
-        if (is_simulation_finished(philo))
-            return (FAILURE);
-        if (remaining > 2)
-            usleep(500);
-        else
-            continue ;
-    }
-    return (SUCCESS);
+	if (!philo || duration_ms <= 0)
+		return (SUCCESS);
+	start = get_time_now();
+	while (1)
+	{
+		remaining = duration_ms - (get_time_now() - start);
+		if (remaining <= 0)
+			break ;
+		if (is_simulation_finished(philo))
+			return (FAILURE);
+		if (remaining > 2)
+			usleep(500);
+	}
+	return (SUCCESS);
 }

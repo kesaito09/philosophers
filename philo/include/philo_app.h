@@ -16,6 +16,6 @@
 
 void	*philo_routine(void *arg);
 int		start_simulation(t_philo_handler *philos, t_info *info);
-int		monitoring(t_philo_handler *philos, t_info *info);
-void	set_simulation_stop(t_info *info);
+int		monitoring(t_philo_handler *philos);
+
 #endif

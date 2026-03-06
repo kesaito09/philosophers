@@ -19,10 +19,11 @@ SRCS = \
 	presentation/philo_main.c \
 	presentation/philo_parser.c \
 	presentation/philo_setup.c \
+	presentation/philo_setup_philo.c \
 	presentation/philo_cleanup.c \
+	application/philo_routine.c \
 	application/philo_simulation.c \
 	application/philo_monitor.c \
-	domain/philo_routine.c \
 	domain/domain_philo_routine.c \
 	domain/domain_philo_eat.c \
 	infrastructure/philo_sync.c \
@@ -30,6 +31,7 @@ SRCS = \
 	infrastructure/philo_utils.c \
 	infrastructure/philo_time.c \
 	infrastructure/philo_ops.c \
+	infrastructure/philo_ops_sync.c \
 	infrastructure/philo_ops_forks.c \
 	infrastructure/philo_ops_meal.c \
 	infrastructure/philo_resource.c \

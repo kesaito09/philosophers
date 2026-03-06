@@ -37,7 +37,7 @@ static int	take_fork_single_philo(t_philo_handler *handler)
 	return (SUCCESS);
 }
 
-int	ops_take_fork(t_philo *self)
+int	ops_take_forks(t_philo *self)
 {
 	t_philo_handler	*handler;
 
