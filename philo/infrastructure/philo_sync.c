@@ -17,6 +17,7 @@
 void	*sync_create(void)
 {
 	pthread_mutex_t	*lock;
+
 	lock = ft_calloc(1, sizeof(pthread_mutex_t));
 	if (!lock)
 		return (NULL);
@@ -31,6 +32,7 @@ void	*sync_create(void)
 void	sync_destroy(void *lock)
 {
 	pthread_mutex_t	*mutex;
+
 	if (!lock)
 		return ;
 	mutex = (pthread_mutex_t *)lock;

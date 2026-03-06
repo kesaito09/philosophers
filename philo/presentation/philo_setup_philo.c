@@ -46,7 +46,8 @@ t_philo_handler	*init_philo(t_info *info)
 
 	if (!info)
 		return (NULL);
-	philos = ft_calloc((size_t)info->rule.num_of_philo, sizeof(t_philo_handler));
+	philos = ft_calloc((size_t)info->rule.num_of_philo,
+			sizeof(t_philo_handler));
 	if (!philos)
 		return (NULL);
 	i = 0;

@@ -22,4 +22,3 @@ int	retry_sem_wait(sem_t *sem)
 	}
 	return (SUCCESS);
 }
-

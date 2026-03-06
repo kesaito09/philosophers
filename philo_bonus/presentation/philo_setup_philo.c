@@ -55,16 +55,11 @@ static void	init_common_philo(t_philo_handler *handler, t_info *info, int index)
 	handler->info = info;
 }
 
-static int	init_handler_resources(t_philo_handler *handler)
-{
-	return (init_meal_lock(handler));
-}
-
 static int	init_single_philo(t_philo_handler *handler,
 		t_info *info, int index)
 {
 	init_common_philo(handler, info, index);
-	return (init_handler_resources(handler));
+	return (init_meal_lock(handler));
 }
 
 t_philo_handler	*init_philo(t_info *info)

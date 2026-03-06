@@ -21,6 +21,7 @@
 typedef struct s_sim_rule	t_sim_rule;
 typedef struct s_philo		t_philo;
 typedef struct s_domain_ops	t_domain_ops;
+typedef bool				(*t_philo_bool_op)(t_philo *self);
 
 typedef enum e_state
 {
@@ -55,8 +56,8 @@ struct						s_domain_ops
 	void					(*drop_forks)(t_philo *self);
 	int						(*log_action)(t_philo *self, t_state state);
 	int						(*update_meal)(t_philo *self);
-	bool					(*is_sated)(t_philo *self);
-	bool					(*should_stop)(t_philo *self);
+	t_philo_bool_op			is_sated;
+	t_philo_bool_op			should_stop;
 	int						(*sleep_ms)(t_philo *self, long duration_ms);
 };
 

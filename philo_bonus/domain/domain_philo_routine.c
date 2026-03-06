@@ -52,8 +52,8 @@ static int	philo_think(t_philo *philo)
 			- philo->rule->time_to_sleep);
 	if (think_time < 0)
 		think_time = 0;
-	slack = (philo->rule->time_to_die - (philo->rule->time_to_eat
-					* group));
+	slack = philo->rule->time_to_die
+		- (philo->rule->time_to_eat * group);
 	if (slack < 15)
 		think_time = 0;
 	else
