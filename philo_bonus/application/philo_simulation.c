@@ -6,12 +6,12 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 06:04:46 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 08:33:35 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philo_app.h"
-#include "../include/philo_domain.h"
+#include "../include/philo_infra.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -22,7 +22,7 @@ static void	kill_children(t_info *info, pid_t except)
 	int	i;
 
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < info->rule.num_of_philo)
 	{
 		if (info->pids[i] > 0 && info->pids[i] != except)
 			kill(info->pids[i], SIGTERM);
@@ -39,13 +39,13 @@ static void	reap_children(int remaining)
 	}
 }
 
-static int	spawn_children(t_philo *philos, t_info *info)
+static int	spawn_children(t_philo_handler *philos, t_info *info)
 {
 	int		i;
 	pid_t	pid;
 
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < info->rule.num_of_philo)
 	{
 		pid = fork();
 		if (pid < 0)
@@ -69,24 +69,24 @@ static int	wait_all_philos(t_info *info)
 	pid_t	pid;
 
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < info->rule.num_of_philo)
 	{
 		pid = waitpid(-1, &status, 0);
 		if (pid == -1)
 			return (FAILURE);
 		if (WIFSIGNALED(status))
-			return (kill_children(info, pid), reap_children(info->num_of_philo
-					- i - 1), SUCCESS);
+			return (kill_children(info, pid),
+				reap_children(info->rule.num_of_philo - i - 1), SUCCESS);
 		if (WIFEXITED(status) && (WEXITSTATUS(status) == EXIT_DEAD
 				|| WEXITSTATUS(status) == EXIT_ERROR))
-			return (kill_children(info, pid), reap_children(info->num_of_philo
-					- i - 1), SUCCESS);
+			return (kill_children(info, pid),
+				reap_children(info->rule.num_of_philo - i - 1), SUCCESS);
 		i++;
 	}
 	return (SUCCESS);
 }
 
-int	start_simulation(t_philo *philos, t_info *info)
+int	start_simulation(t_philo_handler *philos, t_info *info)
 {
 	if (!philos || !info || !info->pids)
 		return (FAILURE);

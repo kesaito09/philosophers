@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 05:45:01 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 05:45:10 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 int	main(int ac, char **av)
 {
-	t_info	*info;
-	t_philo	*philos;
+	t_info			*info;
+	t_philo_handler	*philos;
 
 	info = NULL;
 	philos = NULL;

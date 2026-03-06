@@ -1,24 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_ops.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/03 22:46:29 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/philo_infra.h"
 
-int		ops_log_action(t_philo *self, t_state state);
-long	ops_get_time(void);
-void	ops_sleep_ms(t_philo *self, long duration_ms);
-int		ops_take_forks(t_philo *self);
-void	ops_drop_forks(t_philo *self);
-void	ops_lock_acquire(void *lock);
-void	ops_lock_release(void *lock);
-bool	ops_should_stop(t_philo *self);
-static t_domain_ops	g_domain_ops = {
-	.log_action = ops_log_action,
-	.get_time = ops_get_time,
-	.sleep_ms = ops_sleep_ms,
-	.take_forks = ops_take_forks,
-	.drop_forks = ops_drop_forks,
-	.lock_acquire = ops_lock_acquire,
-	.lock_release = ops_lock_release,
-	.should_stop = ops_should_stop,
-};
+int				ops_take_forks(t_philo *self);
+void			ops_drop_forks(t_philo *self);
+int				ops_update_meal(t_philo *self);
+bool			ops_is_sated(t_philo *self);
+
 t_domain_ops	*get_domain_ops(void)
 {
-	return (&g_domain_ops);
+	static t_domain_ops	ops;
+
+	ops.take_forks = ops_take_forks;
+	ops.drop_forks = ops_drop_forks;
+	ops.log_action = logger;
+	ops.update_meal = ops_update_meal;
+	ops.is_sated = ops_is_sated;
+	ops.should_stop = is_simulation_finished;
+	ops.sleep_ms = philo_usleep;
+	return (&ops);
 }

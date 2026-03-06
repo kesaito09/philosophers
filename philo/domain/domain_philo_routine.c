@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:45:04 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/03 13:47:20 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/03 22:15:26 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	is_philo_sated(t_philo *philo)
 static int	delay_start(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
-		return (philo->ops->sleep_ms(philo, philo->rule->time_to_eat - 10));
+		return (philo->ops->sleep_ms(philo, philo->rule->time_to_eat / 2));
 	return (SUCCESS);
 }
 

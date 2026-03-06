@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 04:56:10 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 08:30:47 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,6 @@
 # include <semaphore.h>
 # include <stdbool.h>
 # include <sys/types.h>
-
-# define SUCCESS 1
-# define FAILURE -1
-# define UNSET_MUST_EAT -1
 
 # define EXIT_DONE 0
 # define EXIT_DEAD 1
@@ -35,11 +31,7 @@
 
 typedef struct s_info
 {
-	int				num_of_philo;
-	long			time_to_die;
-	long			time_to_eat;
-	long			time_to_sleep;
-	long			num_must_eat;
+	t_sim_rule		rule;
 	long			start_time;
 	bool			is_stop_sim;
 	sem_t			*state_lock;
@@ -49,14 +41,12 @@ typedef struct s_info
 	pid_t			*pids;
 }					t_info;
 
-typedef struct s_philo
+typedef struct s_philo_handler
 {
-	int				id;
-	long			eat_count;
-	long			time_last_eat;
+	t_philo			philo;
 	void			*last_eat_lock;
 	t_info			*info;
-	t_domain_ops	*ops;
 	char			*meal_sem_name;
-}					t_philo;
+}					t_philo_handler;
+
 #endif

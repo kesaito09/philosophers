@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 05:48:32 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 05:48:34 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../include/philo_presentation.h"
 #include <stdlib.h>
 
-void	destroy_philos_by_count(t_philo *philos, int count)
+void	destroy_philos_by_count(t_philo_handler *philos, int count)
 {
 	int	i;
 
@@ -44,9 +44,9 @@ static void	destroy_info(t_info *info)
 	free(info);
 }
 
-void	destroy_simulation(t_philo *philos, t_info *info)
+void	destroy_simulation(t_philo_handler *philos, t_info *info)
 {
 	if (info)
-		destroy_philos_by_count(philos, info->num_of_philo);
+		destroy_philos_by_count(philos, info->rule.num_of_philo);
 	destroy_info(info);
 }

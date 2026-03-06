@@ -6,13 +6,11 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/01 03:05:41 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/01 03:05:47 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/philo_domain.h"
 #include "../include/philo_infra.h"
-#include <errno.h>
 #include <stdio.h>
 
 static const char	*get_message(t_state state)
@@ -30,34 +28,36 @@ static const char	*get_message(t_state state)
 	return ("error");
 }
 
-static bool	is_log_allowed(t_philo *philo, t_state state)
+static bool	is_log_allowed(t_philo_handler *handler, t_state state)
 {
 	bool	allowed;
 
-	if (retry_sem_wait(philo->info->state_lock) == FAILURE)
+	if (retry_sem_wait(handler->info->state_lock) == FAILURE)
 		return (false);
 	allowed = true;
-	if (philo->info->is_stop_sim && state != STATE_DIE)
+	if (handler->info->is_stop_sim && state != STATE_DIE)
 		allowed = false;
-	if (sem_post(philo->info->state_lock) != 0)
+	if (sem_post(handler->info->state_lock) != 0)
 		return (false);
 	return (allowed);
 }
 
 int	logger(t_philo *philo, t_state state)
 {
-	long		elapsed;
-	const char	*msg;
+	t_philo_handler	*handler;
+	long			elapsed;
+	const char		*msg;
 
-	if (!philo || !philo->info)
+	handler = (t_philo_handler *)philo;
+	if (!handler || !handler->info)
 		return (FAILURE);
-	if (!is_log_allowed(philo, state))
+	if (!is_log_allowed(handler, state))
 		return (FAILURE);
-	if (retry_sem_wait(philo->info->write_lock) == FAILURE)
+	if (retry_sem_wait(handler->info->write_lock) == FAILURE)
 		return (FAILURE);
-	elapsed = get_time_now() - philo->info->start_time;
+	elapsed = get_time_now() - handler->info->start_time;
 	msg = get_message(state);
 	printf("%ld %d %s\n", elapsed, philo->id, msg);
-	sem_post(philo->info->write_lock);
+	sem_post(handler->info->write_lock);
 	return (SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 04:55:59 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 05:35:57 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_APP_H
 # include "./philo_types.h"
 
-int		start_simulation(t_philo *philos, t_info *info);
-int		monitoring(t_philo *philo);
+int		start_simulation(t_philo_handler *philos, t_info *info);
+int		monitoring(t_philo_handler *handler);
+
 #endif

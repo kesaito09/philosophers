@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 05:45:14 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/02/27 05:45:33 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,14 @@
 #include "../include/philo_infra.h"
 #include <stdlib.h>
 
-static int	init_info_state_sem(t_info *info)
-{
-	info->state_lock = sem_open_wrapper(SEM_STATE, 1);
-	if (!info->state_lock)
-		return (FAILURE);
-	return (SUCCESS);
-}
-
 static int	init_info_resources(t_info *info)
 {
 	int	sit_slots;
-	sit_slots = info->num_of_philo / 2;
+
+	sit_slots = info->rule.num_of_philo / 2;
 	if (sit_slots <= 0)
 		sit_slots = 1;
-	info->forks = sem_open_wrapper(SEM_FORKS, info->num_of_philo);
+	info->forks = sem_open_wrapper(SEM_FORKS, info->rule.num_of_philo);
 	if (!info->forks)
 		return (FAILURE);
 	info->sem_sit = sem_open_wrapper(SEM_SIT, sit_slots);
@@ -43,12 +36,14 @@ static int	init_info_resources(t_info *info)
 static t_info	*init_info(int ac, char **av)
 {
 	t_info	*info;
+
 	info = ft_calloc(1, sizeof(t_info));
 	if (!info)
 		return (NULL);
 	if (parse_input(ac, av, info) == FAILURE)
 		return (free(info), NULL);
-	if (init_info_state_sem(info) == FAILURE)
+	info->state_lock = sem_open_wrapper(SEM_STATE, 1);
+	if (!info->state_lock)
 		return (free(info), NULL);
 	if (init_info_resources(info) == FAILURE)
 		return (cleanup_semaphores(info), free(info), NULL);
@@ -57,36 +52,38 @@ static t_info	*init_info(int ac, char **av)
 	return (info);
 }
 
-static void	set_initial_meal_times(t_philo *philos, t_info *info)
+static void	set_initial_meal_times(t_philo_handler *philos, t_info *info)
 {
 	int	i;
+
 	info->start_time = get_time_now();
 	i = 0;
-	while (i < info->num_of_philo)
+	while (i < info->rule.num_of_philo)
 	{
-		philos[i].time_last_eat = info->start_time;
+		philos[i].philo.time_last_eat = info->start_time;
 		i++;
 	}
 }
 
-int	initializer(int ac, char **av, t_philo **philos, t_info **info)
+int	initializer(int ac, char **av, t_philo_handler **ph, t_info **info)
 {
-	if (!philos || !info)
+	if (!ph || !info)
 		return (FAILURE);
 	*info = init_info(ac, av);
 	if (!*info)
 		return (FAILURE);
-	*philos = init_philo(*info);
-	if (!*philos)
+	*ph = init_philo(*info);
+	if (!*ph)
 		return (destroy_simulation(NULL, *info), *info = NULL, FAILURE);
-	(*info)->pids = ft_calloc((size_t)(*info)->num_of_philo, sizeof(pid_t));
+	(*info)->pids = ft_calloc((size_t)(*info)->rule.num_of_philo,
+			sizeof(pid_t));
 	if (!(*info)->pids)
 	{
-		destroy_simulation(*philos, *info);
-		*philos = NULL;
+		destroy_simulation(*ph, *info);
+		*ph = NULL;
 		*info = NULL;
 		return (FAILURE);
 	}
-	set_initial_meal_times(*philos, *info);
+	set_initial_meal_times(*ph, *info);
 	return (SUCCESS);
 }
