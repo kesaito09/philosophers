@@ -57,14 +57,22 @@ static void	*monitor_routine(void *arg)
 	return (NULL);
 }
 
-int	monitoring(t_philo_handler *handler)
+int	start_monitor_thread(t_philo_handler *handler)
 {
 	pthread_t	monitor;
-	int			result;
 
 	if (pthread_create(&monitor, NULL, monitor_routine, handler) != 0)
 		return (FAILURE);
 	if (pthread_detach(monitor) != 0)
+		return (FAILURE);
+	return (SUCCESS);
+}
+
+int	run_philo_process(t_philo_handler *handler)
+{
+	int	result;
+
+	if (start_monitor_thread(handler) == FAILURE)
 		return (FAILURE);
 	result = domain_philo_routine(&handler->philo);
 	set_simulation_stop(handler->info);

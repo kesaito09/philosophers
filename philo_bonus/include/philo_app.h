@@ -15,6 +15,7 @@
 # include "./philo_types.h"
 
 int		start_simulation(t_philo_handler *philos, t_info *info);
-int		monitoring(t_philo_handler *handler);
+int		start_monitor_thread(t_philo_handler *handler);
+int		run_philo_process(t_philo_handler *handler);
 
 #endif

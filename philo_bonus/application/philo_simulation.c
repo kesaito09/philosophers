@@ -17,7 +17,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-static void	kill_children(t_info *info, pid_t except)
+static void	terminate_children(t_info *info, pid_t except, int remaining)
 {
 	int	i;
 
@@ -28,15 +28,28 @@ static void	kill_children(t_info *info, pid_t except)
 			kill(info->pids[i], SIGTERM);
 		i++;
 	}
-}
-
-static void	reap_children(int remaining)
-{
 	while (remaining > 0)
 	{
 		waitpid(-1, NULL, 0);
 		remaining--;
 	}
+}
+
+static int	handle_wait_status(t_info *info, int status, pid_t pid, int index)
+{
+	if (WIFSIGNALED(status))
+		return (terminate_children(info, pid,
+				info->rule.num_of_philo - index - 1), FAILURE);
+	if (!WIFEXITED(status))
+		return (terminate_children(info, pid,
+				info->rule.num_of_philo - index - 1), FAILURE);
+	if (WEXITSTATUS(status) == EXIT_DONE)
+		return (SUCCESS);
+	if (WEXITSTATUS(status) == EXIT_DEAD)
+		return (terminate_children(info, pid,
+				info->rule.num_of_philo - index - 1), SUCCESS);
+	return (terminate_children(info, pid,
+			info->rule.num_of_philo - index - 1), FAILURE);
 }
 
 static int	spawn_children(t_philo_handler *philos, t_info *info)
@@ -49,12 +62,12 @@ static int	spawn_children(t_philo_handler *philos, t_info *info)
 	{
 		pid = fork();
 		if (pid < 0)
-			return (kill_children(info, -1), reap_children(i), FAILURE);
+			return (terminate_children(info, -1, i), FAILURE);
 		if (pid == 0)
 		{
-			if (monitoring(&philos[i]) == SUCCESS)
+			if (run_philo_process(&philos[i]) == SUCCESS)
 				exit(EXIT_DONE);
-			exit(EXIT_DEAD);
+			exit(EXIT_ERROR);
 		}
 		info->pids[i] = pid;
 		i++;
@@ -74,13 +87,10 @@ static int	wait_all_philos(t_info *info)
 		pid = waitpid(-1, &status, 0);
 		if (pid == -1)
 			return (FAILURE);
-		if (WIFSIGNALED(status))
-			return (kill_children(info, pid),
-				reap_children(info->rule.num_of_philo - i - 1), SUCCESS);
-		if (WIFEXITED(status) && (WEXITSTATUS(status) == EXIT_DEAD
-				|| WEXITSTATUS(status) == EXIT_ERROR))
-			return (kill_children(info, pid),
-				reap_children(info->rule.num_of_philo - i - 1), SUCCESS);
+		if (handle_wait_status(info, status, pid, i) != SUCCESS)
+			return (FAILURE);
+		if (WIFEXITED(status) && WEXITSTATUS(status) == EXIT_DEAD)
+			return (SUCCESS);
 		i++;
 	}
 	return (SUCCESS);

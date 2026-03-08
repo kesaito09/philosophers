@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:42:39 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/02 17:54:07 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/08 18:46:19 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	check_death_and_stop(t_philo_handler *philos, t_info *info)
 		sync_take(philos[i].last_eat_lock);
 		last_eat = philos[i].philo.time_last_eat;
 		sync_release(philos[i].last_eat_lock);
-		if (now - last_eat > info->rule.time_to_die)
+		if (now - last_eat >= info->rule.time_to_die)
 		{
 			set_simulation_stop(info);
 			logger(&philos[i].philo, STATE_DIE);

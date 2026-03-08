@@ -30,16 +30,18 @@ static const char	*get_message(t_state state)
 
 static bool	is_log_allowed(t_philo_handler *handler, t_state state)
 {
-	bool	allowed;
-
-	if (retry_sem_wait(handler->info->state_lock) == FAILURE)
-		return (false);
-	allowed = true;
 	if (handler->info->is_stop_sim && state != STATE_DIE)
-		allowed = false;
-	if (sem_post(handler->info->state_lock) != 0)
 		return (false);
-	return (allowed);
+	return (true);
+}
+
+static int	unlock_logger(sem_t *write_lock, sem_t *state_lock, int result)
+{
+	if (state_lock && sem_post(state_lock) != 0)
+		result = FAILURE;
+	if (sem_post(write_lock) != 0)
+		return (FAILURE);
+	return (result);
 }
 
 int	logger(t_philo *philo, t_state state)
@@ -51,13 +53,16 @@ int	logger(t_philo *philo, t_state state)
 	handler = (t_philo_handler *)philo;
 	if (!handler || !handler->info)
 		return (FAILURE);
-	if (!is_log_allowed(handler, state))
-		return (FAILURE);
 	if (retry_sem_wait(handler->info->write_lock) == FAILURE)
 		return (FAILURE);
+	if (retry_sem_wait(handler->info->state_lock) == FAILURE)
+		return (unlock_logger(handler->info->write_lock, NULL, FAILURE));
+	if (!is_log_allowed(handler, state))
+		return (unlock_logger(handler->info->write_lock,
+				handler->info->state_lock, FAILURE));
 	elapsed = get_time_now() - handler->info->start_time;
 	msg = get_message(state);
 	printf("%ld %d %s\n", elapsed, philo->id, msg);
-	sem_post(handler->info->write_lock);
-	return (SUCCESS);
+	return (unlock_logger(handler->info->write_lock,
+			handler->info->state_lock, SUCCESS));
 }

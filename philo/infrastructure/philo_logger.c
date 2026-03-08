@@ -30,14 +30,9 @@ static const char	*get_message(t_state state)
 
 static bool	is_log_allowed(t_philo_handler *handler, t_state state)
 {
-	bool	allowed;
-
-	sync_take(handler->info->state_lock);
-	allowed = true;
 	if (handler->info->is_stop_sim && state != STATE_DIE)
-		allowed = false;
-	sync_release(handler->info->state_lock);
-	return (allowed);
+		return (false);
+	return (true);
 }
 
 int	logger(t_philo *philo, t_state state)
@@ -49,12 +44,18 @@ int	logger(t_philo *philo, t_state state)
 	handler = (t_philo_handler *)philo;
 	if (!handler || !handler->info)
 		return (FAILURE);
-	if (!is_log_allowed(handler, state))
-		return (FAILURE);
 	sync_take(handler->info->write_lock);
+	sync_take(handler->info->state_lock);
+	if (!is_log_allowed(handler, state))
+	{
+		sync_release(handler->info->state_lock);
+		sync_release(handler->info->write_lock);
+		return (FAILURE);
+	}
 	elapsed = get_time_now() - handler->info->start_time;
 	msg = get_message(state);
 	printf("%ld %d %s\n", elapsed, philo->id, msg);
+	sync_release(handler->info->state_lock);
 	sync_release(handler->info->write_lock);
 	return (SUCCESS);
 }

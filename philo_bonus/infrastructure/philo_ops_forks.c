@@ -23,8 +23,14 @@ int	ops_take_forks(t_philo *self)
 		return (FAILURE);
 	if (retry_sem_wait(handler->info->forks) == FAILURE)
 		return (sem_post(handler->info->sem_sit), FAILURE);
+	if (logger(self, STATE_TAKE_FORK) == FAILURE)
+		return (sem_post(handler->info->forks),
+			sem_post(handler->info->sem_sit), FAILURE);
 	if (retry_sem_wait(handler->info->forks) == FAILURE)
 		return (sem_post(handler->info->forks),
+			sem_post(handler->info->sem_sit), FAILURE);
+	if (logger(self, STATE_TAKE_FORK) == FAILURE)
+		return (sem_post(handler->info->forks), sem_post(handler->info->forks),
 			sem_post(handler->info->sem_sit), FAILURE);
 	return (SUCCESS);
 }
