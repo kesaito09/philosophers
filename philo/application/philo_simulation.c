@@ -12,6 +12,7 @@
 
 #include "../include/philo_app.h"
 #include "../include/philo_infra.h"
+#include "../include/philo_presentation.h"
 
 static int	join_philosophers_thread(t_philo_handler *philos, t_info *info)
 {
@@ -51,9 +52,11 @@ int	start_simulation(t_philo_handler *philos, t_info *info)
 {
 	if (!philos || !info)
 		return (FAILURE);
+	set_initial_meal_times(philos, info);
 	if (create_philosophers_thread(philos, info) == FAILURE)
 		return (FAILURE);
-	monitoring(philos);
+	if (monitoring(philos) == FAILURE)
+		return (FAILURE);
 	if (join_philosophers_thread(philos, info) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);

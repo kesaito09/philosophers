@@ -17,6 +17,7 @@
 int				parse_input(int ac, char **av, t_info *info);
 int				initializer(int ac, char **av, t_philo_handler **philos,
 					t_info **info);
+void			set_initial_meal_times(t_philo_handler *philos, t_info *info);
 t_philo_handler	*init_philo(t_info *info);
 void			destroy_simulation(t_philo_handler *philos, t_info *info);
 void			destroy_philos_by_count(t_philo_handler *philos, int count);

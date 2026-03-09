@@ -63,6 +63,8 @@ int	logger(t_philo *philo, t_state state)
 	elapsed = get_time_now() - handler->info->start_time;
 	msg = get_message(state);
 	printf("%ld %d %s\n", elapsed, philo->id, msg);
+	if (state == STATE_DIE)
+		return (sem_post(handler->info->state_lock), SUCCESS);
 	return (unlock_logger(handler->info->write_lock,
 			handler->info->state_lock, SUCCESS));
 }

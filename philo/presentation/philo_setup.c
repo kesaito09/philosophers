@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 22:36:05 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/02 18:09:43 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/09 21:30:04 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static t_info	*init_info(int ac, char **av)
 	return (info);
 }
 
-static void	set_initial_meal_times(t_philo_handler *philos, t_info *info)
+void	set_initial_meal_times(t_philo_handler *philos, t_info *info)
 {
 	int	i;
 
@@ -66,6 +66,5 @@ int	initializer(int ac, char **av, t_philo_handler **philos, t_info **info)
 	*philos = init_philo(*info);
 	if (!*philos)
 		return (destroy_simulation(NULL, *info), *info = NULL, FAILURE);
-	set_initial_meal_times(*philos, *info);
 	return (SUCCESS);
 }

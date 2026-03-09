@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 05:30:28 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/09 12:32:25 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static long	get_last_eat_time(t_philo_handler *handler)
 
 static void	handle_death(t_philo_handler *handler)
 {
-	set_simulation_stop(handler->info);
 	logger(&handler->philo, STATE_DIE);
 	exit(EXIT_DEAD);
 }
@@ -50,7 +49,7 @@ static void	*monitor_routine(void *arg)
 			set_simulation_stop(handler->info);
 			exit(EXIT_ERROR);
 		}
-		if (get_time_now() - last_eat > handler->info->rule.time_to_die)
+		if (get_time_now() - last_eat >= handler->info->rule.time_to_die)
 			handle_death(handler);
 		usleep(500);
 	}
