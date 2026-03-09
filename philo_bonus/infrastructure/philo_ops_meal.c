@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/06 13:02:50 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 13:02:50 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/09 22:52:54 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ int	ops_update_meal(t_philo *self)
 		return (FAILURE);
 	self->time_last_eat = get_time_now();
 	self->eat_count++;
-	sem_post((sem_t *)handler->last_eat_lock);
+	if (sem_post((sem_t *)handler->last_eat_lock) != 0)
+		return (FAILURE);
 	return (SUCCESS);
 }
 
@@ -38,6 +39,7 @@ bool	ops_is_sated(t_philo *self)
 	if (retry_sem_wait((sem_t *)handler->last_eat_lock) == FAILURE)
 		return (false);
 	sated = (self->eat_count >= self->rule->num_must_eat);
-	sem_post((sem_t *)handler->last_eat_lock);
+	if (sem_post((sem_t *)handler->last_eat_lock) != 0)
+		return (FAILURE);
 	return (sated);
 }
