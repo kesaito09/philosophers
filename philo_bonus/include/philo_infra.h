@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 04:56:06 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 15:40:13 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/10 14:10:52 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "./philo_types.h"
 # include <stddef.h>
 
-sem_t			*sem_open_wrapper(char *sem_name, int n);
+sem_t			*sem_open_wrapper(char *sem_name, unsigned int n);
 int				sem_unlink_wrapper(char *sem_name);
 int				cleanup_semaphores(t_info *info);
 int				retry_sem_wait(sem_t *sem);

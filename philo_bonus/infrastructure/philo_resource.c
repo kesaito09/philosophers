@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 05:42:26 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/10 14:17:03 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	sem_unlink_wrapper(char *sem_name)
 	return (SUCCESS);
 }
 
-sem_t	*sem_open_wrapper(char *sem_name, int n)
+sem_t	*sem_open_wrapper(char *sem_name, unsigned int n)
 {
 	sem_t	*sem;
 
@@ -36,7 +36,7 @@ sem_t	*sem_open_wrapper(char *sem_name, int n)
 static void	sem_close_wrapper(sem_t *sem)
 {
 	if (sem)
-		sem_close(sem);
+		(void)sem_close(sem);
 }
 
 int	cleanup_semaphores(t_info *info)

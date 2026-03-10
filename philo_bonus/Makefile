@@ -21,6 +21,7 @@ SRCS = \
 	presentation/philo_setup.c \
 	presentation/philo_setup_philo.c \
 	presentation/philo_cleanup.c \
+	application/philo_spawn.c \
 	application/philo_simulation.c \
 	application/philo_monitor.c \
 	domain/domain_philo_routine.c \

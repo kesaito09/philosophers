@@ -15,6 +15,9 @@
 # include "./philo_types.h"
 
 int		start_simulation(t_philo_handler *philos, t_info *info);
+pid_t	retry_waitpid(int *status);
+void	terminate_children(t_info *info, pid_t except, int remaining);
+int		spawn_children(t_philo_handler *philos, t_info *info);
 int		start_monitor_thread(t_philo_handler *handler);
 int		run_philo_process(t_philo_handler *handler);
 
