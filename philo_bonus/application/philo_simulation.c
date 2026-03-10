@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 06:04:46 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/10 01:47:56 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/10 15:21:48 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 #include "../include/philo_infra.h"
 #include <sys/wait.h>
 
-static int	handle_wait_status(int status)
+static int	parse_exit_status(int status)
 {
-	if (WIFSIGNALED(status))
-		return (EXIT_ERROR);
-	if (!WIFEXITED(status))
+	if (WIFSIGNALED(status) || !WIFEXITED(status))
 		return (EXIT_ERROR);
 	return (WEXITSTATUS(status));
 }
@@ -36,7 +34,7 @@ static int	wait_all_philos(t_info *info)
 		pid = retry_waitpid(&status);
 		if (pid == -1)
 			return (FAILURE);
-		exit_status = handle_wait_status(status);
+		exit_status = parse_exit_status(status);
 		if (exit_status == EXIT_DONE)
 		{
 			i++;
