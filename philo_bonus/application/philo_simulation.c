@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 06:04:46 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/10 15:21:48 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/11 09:13:17 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,15 @@ static int	parse_exit_status(int status)
 	if (WIFSIGNALED(status) || !WIFEXITED(status))
 		return (EXIT_ERROR);
 	return (WEXITSTATUS(status));
+}
+
+static int	handle_child_exit(t_info *info, pid_t pid,
+	int remaining, int exit_status)
+{
+	terminate_children(info, pid, remaining);
+	if (exit_status == EXIT_DEAD)
+		return (SUCCESS);
+	return (FAILURE);
 }
 
 static int	wait_all_philos(t_info *info)
@@ -40,10 +49,8 @@ static int	wait_all_philos(t_info *info)
 			i++;
 			continue ;
 		}
-		terminate_children(info, pid, info->rule.num_of_philo - i - 1);
-		if (exit_status == EXIT_DEAD)
-			return (SUCCESS);
-		return (FAILURE);
+		return (handle_child_exit(info, pid,
+				info->rule.num_of_philo - i - 1, exit_status));
 	}
 	return (SUCCESS);
 }
