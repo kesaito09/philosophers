@@ -28,13 +28,6 @@ static const char	*get_message(t_state state)
 	return ("error");
 }
 
-static bool	is_log_allowed(t_philo_handler *handler, t_state state)
-{
-	if (handler->info->is_stop_sim && state != STATE_DIE)
-		return (false);
-	return (true);
-}
-
 static int	unlock_logger(sem_t *write_lock, sem_t *state_lock, int result)
 {
 	if (state_lock && sem_post(state_lock) != 0)
@@ -57,7 +50,7 @@ int	logger(t_philo *philo, t_state state)
 		return (FAILURE);
 	if (retry_sem_wait(handler->info->state_lock) == FAILURE)
 		return (unlock_logger(handler->info->write_lock, NULL, FAILURE));
-	if (!is_log_allowed(handler, state))
+	if (handler->info->is_stop_sim && state != STATE_DIE)
 		return (unlock_logger(handler->info->write_lock,
 				handler->info->state_lock, FAILURE));
 	elapsed = get_time_now() - handler->info->start_time;

@@ -28,13 +28,6 @@ static const char	*get_message(t_state state)
 	return ("error");
 }
 
-static bool	is_log_allowed(t_philo_handler *handler, t_state state)
-{
-	if (handler->info->is_stop_sim && state != STATE_DIE)
-		return (false);
-	return (true);
-}
-
 int	logger(t_philo *philo, t_state state)
 {
 	t_philo_handler	*handler;
@@ -46,7 +39,7 @@ int	logger(t_philo *philo, t_state state)
 		return (FAILURE);
 	sync_take(handler->info->write_lock);
 	sync_take(handler->info->state_lock);
-	if (!is_log_allowed(handler, state))
+	if (handler->info->is_stop_sim && state != STATE_DIE)
 	{
 		sync_release(handler->info->state_lock);
 		sync_release(handler->info->write_lock);

@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:45:04 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/11 14:07:21 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/11 22:31:57 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,24 @@ static int	philo_sleep(t_philo *philo)
 
 static int	philo_think(t_philo *philo)
 {
-	long	think_time;
+	long	required_wait;
 	int		group;
-	long	margin;
+	long	safety_buffer;
 
 	group = philo->rule->num_of_philo % 2 + 2;
 	if (philo->ops->log_action(philo, STATE_THINK) == FAILURE)
 		return (FAILURE);
-	think_time = (philo->rule->time_to_eat * (group - 1)
+	required_wait = (philo->rule->time_to_eat * (group - 1)
 			- philo->rule->time_to_sleep);
-	if (think_time < 0)
-		think_time = 0;
-	margin = philo->rule->time_to_die
+	if (required_wait < 0)
+		required_wait = 0;
+	safety_buffer = philo->rule->time_to_die
 		- (philo->rule->time_to_eat * group);
-	if (margin < 40)
-		think_time = 0;
+	if (safety_buffer < 40)
+		required_wait = 0;
 	else
-		think_time += margin / 2;
-	philo->ops->sleep_ms(philo, think_time);
+		required_wait += safety_buffer / 2;
+	philo->ops->sleep_ms(philo, required_wait);
 	return (SUCCESS);
 }
 
