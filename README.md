@@ -105,7 +105,6 @@ The code is organized by responsibility in both `philo/` and `philo_bonus/`:
 
 Classic references related to the topic:
 
-- The 42 project subject: [`en.philo.pdf`](/Users/ksaitou/Downloads/en.philo.pdf)
 - POSIX threads manual pages: [`pthread_create(3)`](https://man7.org/linux/man-pages/man3/pthread_create.3.html), [`pthread_mutex_lock(3p)`](https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html)
 - POSIX semaphores manual pages: [`sem_open(3)`](https://man7.org/linux/man-pages/man3/sem_open.3.html), [`sem_wait(3)`](https://man7.org/linux/man-pages/man3/sem_wait.3.html)
 - Dining philosophers background: [Wikipedia - Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
