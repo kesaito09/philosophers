@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/25 16:45:04 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/03 22:15:26 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/03/11 14:07:21 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	philo_think(t_philo *philo)
 {
 	long	think_time;
 	int		group;
-	long	slack;
+	long	margin;
 
 	group = philo->rule->num_of_philo % 2 + 2;
 	if (philo->ops->log_action(philo, STATE_THINK) == FAILURE)
@@ -52,12 +52,12 @@ static int	philo_think(t_philo *philo)
 			- philo->rule->time_to_sleep);
 	if (think_time < 0)
 		think_time = 0;
-	slack = philo->rule->time_to_die
+	margin = philo->rule->time_to_die
 		- (philo->rule->time_to_eat * group);
-	if (slack < 15)
+	if (margin < 40)
 		think_time = 0;
 	else
-		think_time += slack / 2;
+		think_time += margin / 2;
 	philo->ops->sleep_ms(philo, think_time);
 	return (SUCCESS);
 }
