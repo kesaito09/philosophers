@@ -15,17 +15,21 @@
 # include "./philo_domain.h"
 # include <pthread.h>
 
+typedef struct s_info			t_info;
+typedef struct s_philo_handler	t_philo_handler;
+
 typedef struct s_info
 {
 	t_sim_rule		rule;
 	long			start_time;
 	bool			is_stop_sim;
+	t_philo_handler	*philos;
 	void			*state_lock;
 	void			*write_lock;
 	void			**forks;
 }					t_info;
 
-typedef struct s_philo_handler
+struct s_philo_handler
 {
 	t_philo			philo;
 	pthread_t		thread;
@@ -33,6 +37,6 @@ typedef struct s_philo_handler
 	void			*right_fork;
 	void			*last_eat_lock;
 	t_info			*info;
-}					t_philo_handler;
+};
 
 #endif

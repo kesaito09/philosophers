@@ -27,6 +27,8 @@ t_domain_ops	*get_domain_ops(void)
 	ops.update_meal = ops_update_meal;
 	ops.is_sated = ops_is_sated;
 	ops.should_stop = is_simulation_finished;
+	ops.last_meal_ms = ops_get_last_meal_ms;
+	ops.now_ms = get_time_now;
 	ops.sleep_ms = philo_usleep;
 	return (&ops);
 }

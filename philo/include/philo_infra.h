@@ -26,6 +26,7 @@ long			get_time_now(void);
 int				philo_usleep(t_philo *philo, long duration_ms);
 bool			is_simulation_finished(t_philo *philo);
 int				logger(t_philo *philo, t_state state);
+long			ops_get_last_meal_ms(t_philo *self);
 
 void			**infra_create_forks(int count);
 void			infra_destroy_forks(void **forks, int count);

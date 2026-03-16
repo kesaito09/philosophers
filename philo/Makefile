@@ -25,6 +25,8 @@ SRCS = \
 	application/philo_simulation.c \
 	application/philo_monitor.c \
 	domain/domain_philo_routine.c \
+	domain/domain_philo_timing.c \
+	domain/domain_philo_timing_dynamic.c \
 	domain/domain_philo_eat.c \
 	infrastructure/philo_sync.c \
 	infrastructure/philo_logger.c \

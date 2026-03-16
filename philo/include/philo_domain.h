@@ -58,6 +58,8 @@ struct						s_domain_ops
 	int						(*update_meal)(t_philo *self);
 	t_philo_bool_op			is_sated;
 	t_philo_bool_op			should_stop;
+	long					(*last_meal_ms)(t_philo *self);
+	long					(*now_ms)(void);
 	int						(*sleep_ms)(t_philo *self, long duration_ms);
 };
 

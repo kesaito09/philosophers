@@ -40,6 +40,7 @@ static t_info	*init_info(int ac, char **av)
 		return (free(info), NULL);
 	info->is_stop_sim = false;
 	info->start_time = 0;
+	info->philos = NULL;
 	return (info);
 }
 

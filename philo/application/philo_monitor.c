@@ -23,7 +23,7 @@ static int	is_simulation_stopped(t_info *info)
 	return (stopped);
 }
 
-static bool	all_philosophers_sated(t_philo_handler *philos, t_info *info)
+static bool	is_all_philosophers_sated(t_philo_handler *philos, t_info *info)
 {
 	int		i;
 	long	eat_count;
@@ -50,7 +50,7 @@ static void	finish_simulation(t_info *info, t_philo_handler *dead_philo)
 		logger(&dead_philo->philo, STATE_DIE);
 }
 
-static bool	check_death(t_philo_handler *philos, t_info *info,
+static bool	is_philo_dead(t_philo_handler *philos, t_info *info,
 	t_philo_handler **dead_philo)
 {
 	int		i;
@@ -65,10 +65,10 @@ static bool	check_death(t_philo_handler *philos, t_info *info,
 		sync_take(philos[i].last_eat_lock);
 		last_eat = philos[i].philo.time_last_eat;
 		sync_release(philos[i].last_eat_lock);
-		if (now - last_eat >= info->rule.time_to_die)
-		{
-			*dead_philo = &philos[i];
-			return (true);
+			if (now - last_eat >= info->rule.time_to_die)
+			{
+				*dead_philo = &philos[i];
+				return (true);
 		}
 		i++;
 	}
@@ -85,9 +85,9 @@ int	monitoring(t_philo_handler *philos)
 	info = philos[0].info;
 	while (!is_simulation_stopped(info))
 	{
-		if (all_philosophers_sated(philos, info))
+		if (is_all_philosophers_sated(philos, info))
 			finish_simulation(info, NULL);
-		if (check_death(philos, info, &dead_philo))
+		if (is_philo_dead(philos, info, &dead_philo))
 			finish_simulation(info, dead_philo);
 		philo_usleep(&philos[0].philo, 1);
 	}

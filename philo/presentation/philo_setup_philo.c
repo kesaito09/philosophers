@@ -57,5 +57,6 @@ t_philo_handler	*init_philo(t_info *info)
 			return (destroy_philos_by_count(philos, i), NULL);
 		i++;
 	}
+	info->philos = philos;
 	return (philos);
 }

@@ -40,27 +40,23 @@ static int	take_fork_single_philo(t_philo_handler *handler)
 int	ops_take_forks(t_philo *self)
 {
 	t_philo_handler	*handler;
-	void			*first;
-	void			*second;
 
 	if (!self)
 		return (FAILURE);
 	handler = (t_philo_handler *)self;
 	if (self->rule->num_of_philo == 1)
 		return (take_fork_single_philo(handler));
-	first = first_fork(handler);
-	second = second_fork(handler);
-	sync_take(first);
+	sync_take(first_fork(handler));
 	if (logger(self, STATE_TAKE_FORK) == FAILURE)
 	{
-		sync_release(first);
+		sync_release(first_fork(handler));
 		return (FAILURE);
 	}
-	sync_take(second);
+	sync_take(second_fork(handler));
 	if (logger(self, STATE_TAKE_FORK) == FAILURE)
 	{
-		sync_release(second);
-		sync_release(first);
+		sync_release(second_fork(handler));
+		sync_release(first_fork(handler));
 		return (FAILURE);
 	}
 	return (SUCCESS);
