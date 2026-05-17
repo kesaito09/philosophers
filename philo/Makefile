@@ -5,27 +5,28 @@
 #                                                     +:+ +:+         +:+      #
 #    By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/05/16 00:00:00 by kesaitou          #+#    #+#              #
-#    Updated: 2026/05/16 00:00:00 by kesaitou         ###   ########.fr        #
+#    Created: 2026/05/17 12:00:00 by kesaitou          #+#    #+#              #
+#    Updated: 2026/05/17 17:11:00 by kesaitou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME    := philo
+NAME		:= philo
 
-CC      := cc
-CFLAGS  := -Wall -Wextra -Werror -pthread
+CC			:= cc
+CFLAGS		:= -Wall -Wextra -Werror -pthread
 
-SRCS    := main.c \
-           parse.c \
-           init.c \
-           routine.c \
-           monitor.c \
-           utils.c
+SRCS		:= main.c \
+			   parse.c \
+			   init.c \
+			   forks.c \
+			   simulation.c \
+			   routine.c \
+			   monitor.c \
+			   utils.c
 
-OBJS    := $(SRCS:.c=.o)
+OBJS		:= $(SRCS:.c=.o)
 
-# Default args for valgrind / tsan runs. Override with: make helgrind ARGS="N ..."
-ARGS    ?= 5 800 200 200
+ARGS		?= 5 800 200 200 5
 
 all: $(NAME)
 
@@ -47,7 +48,7 @@ re: fclean all
 #  Docker (run from host)                                                      #
 # ---------------------------------------------------------------------------- #
 
-DOCKER_DIR := ../docker
+DOCKER_DIR	:= ../docker
 
 docker-shell:
 	cd $(DOCKER_DIR) && ./run.sh shell
@@ -59,8 +60,7 @@ docker-down:
 	cd $(DOCKER_DIR) && ./run.sh down
 
 # ---------------------------------------------------------------------------- #
-#  Race / memory checks (run inside docker container)                          #
-#    usage: make helgrind ARGS="5 800 200 200"                                 #
+#  Race / memory checks                                                        #
 # ---------------------------------------------------------------------------- #
 
 helgrind: $(NAME)
@@ -84,17 +84,17 @@ memcheck: $(NAME)
 	         --error-exitcode=42 \
 	         ./$(NAME) $(ARGS)
 
-# ThreadSanitizer build (clang). Drops -Werror because sanitizer-instrumented
-# code conflicts with strict warnings.
-TSAN_BIN    := philo_tsan
-TSAN_CC     := clang
-TSAN_CFLAGS := -Wall -Wextra -g -O1 -fsanitize=thread -fno-omit-frame-pointer -pthread
+TSAN_BIN	:= philo_tsan
+TSAN_CC		:= clang
+TSAN_CFLAGS	:= -Wall -Wextra -g -O1 -fsanitize=thread \
+			   -fno-omit-frame-pointer -pthread
 
 $(TSAN_BIN): $(SRCS) philo.h
 	$(TSAN_CC) $(TSAN_CFLAGS) -o $@ $(SRCS)
 
 tsan: $(TSAN_BIN)
-	TSAN_OPTIONS='halt_on_error=1 second_deadlock_stack=1' ./$(TSAN_BIN) $(ARGS)
+	TSAN_OPTIONS='halt_on_error=1 second_deadlock_stack=1' \
+	  ./$(TSAN_BIN) $(ARGS)
 
 race: helgrind drd memcheck tsan
 	@echo "--- all race checks passed ---"

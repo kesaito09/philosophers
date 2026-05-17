@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/16 00:00:00 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/05/16 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Created: 2026/05/17 12:00:00 by kesaitou          #+#    #+#             */
+/*   Updated: 2026/05/17 14:00:00 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,17 @@
 # include <pthread.h>
 # include <stdbool.h>
 # include <stddef.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/time.h>
-# include <unistd.h>
 
-# define UNSET_MUST_EAT -1
+# define UNSET_MUST_EAT (-1L)
+
+typedef enum e_status
+{
+	SUCCESS = 1,
+	FAILURE = -1,
+	STOPPED = 0,
+	DIED = 2,
+	SATED = 3
+}	t_status;
 
 typedef enum e_state
 {
@@ -30,60 +34,70 @@ typedef enum e_state
 	STATE_EAT,
 	STATE_SLEEP,
 	STATE_THINK,
-	STATE_DIE,
-}					t_state;
+	STATE_DIE
+}	t_state;
 
 typedef struct s_rule
 {
-	int				num;
-	long			t_die;
-	long			t_eat;
-	long			t_sleep;
-	long			must_eat;
-}					t_rule;
+	int		num_of_philo;
+	long	time_to_die;
+	long	time_to_eat;
+	long	time_to_sleep;
+	long	num_must_eat;
+}	t_rule;
 
-struct				s_sim;
+typedef struct s_sim_state
+{
+	long			start_time;
+	bool			is_stopped;
+	pthread_mutex_t	state_lock;
+	pthread_mutex_t	write_lock;
+}	t_sim_state;
+
+typedef struct s_meal
+{
+	long			count;
+	long			last_time;
+	pthread_mutex_t	lock;
+}	t_meal;
+
+typedef struct s_info	t_info;
 
 typedef struct s_philo
 {
 	int				id;
-	long			eat_count;
-	long			last_eat_ms;
-	pthread_mutex_t	meal_lock;
 	pthread_t		thread;
-	struct s_sim	*sim;
-}					t_philo;
+	t_meal			meal;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	t_info			*info;
+}	t_philo;
 
-typedef struct s_sim
+struct s_info
 {
 	t_rule			rule;
-	long			start_ms;
-	bool			stop;
-	pthread_mutex_t	stop_lock;
-	pthread_mutex_t	print_lock;
+	t_sim_state		sim;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;
-}					t_sim;
+};
 
-/* parse.c */
-int					parse_args(int ac, char **av, t_rule *rule);
+int		parse_input(int ac, char **av, t_rule *rule);
 
-/* init.c */
-int					sim_init(t_sim *sim, const t_rule *rule);
-void				sim_destroy(t_sim *sim);
+int		init_simulation(int ac, char **av, t_info *info);
+void	destroy_simulation(t_info *info);
 
-/* routine.c */
-int					start_simulation(t_sim *sim);
-void				*philo_routine(void *arg);
+void	*philo_routine(void *arg);
+int		take_forks(t_philo *philo);
+void	drop_forks(t_philo *philo);
 
-/* monitor.c */
-int					monitor(t_sim *sim);
+int		start_simulation(t_info *info);
+int		monitor_loop(t_info *info);
+int		log_action(t_philo *philo, t_state state);
 
-/* utils.c */
-long				get_time_ms(void);
-int					smart_sleep(t_philo *philo, long duration_ms);
-void				print_action(t_philo *philo, t_state state);
-bool				sim_stopped(t_sim *sim);
-void				sim_set_stop(t_sim *sim);
+long	get_time_ms(void);
+int		philo_usleep(t_philo *philo, long duration_ms);
+void	*ft_calloc(size_t nmemb, size_t size);
+bool	is_stopped(t_info *info);
+void	stop_simulation(t_info *info);
 
 #endif

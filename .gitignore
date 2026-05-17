@@ -2,3 +2,4 @@
 philo/philo
 subject/*
 docs/*
+philo/philo_tsan*
