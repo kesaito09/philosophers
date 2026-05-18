@@ -40,9 +40,7 @@ int	philo_usleep(t_philo *philo, long duration_ms)
 		remaining = duration_ms - (get_time_ms() - start);
 		if (remaining <= 0)
 			break ;
-		if (remaining > 10)
-			usleep(1000);
-		else if (remaining > 1)
+		if (remaining > 1)
 			usleep(100);
 	}
 	return (SUCCESS);

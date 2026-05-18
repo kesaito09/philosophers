@@ -37,22 +37,21 @@ int	log_action(t_philo *philo, t_state state)
 {
 	t_sim_state	*s;
 	long		elapsed;
-	bool		stopped;
 
 	if (!philo || !philo->info)
 		return (FAILURE);
 	s = &philo->info->sim;
-	elapsed = get_time_ms() - s->start_time;
 	pthread_mutex_lock(&s->write_lock);
 	pthread_mutex_lock(&s->state_lock);
-	stopped = s->is_stopped;
-	pthread_mutex_unlock(&s->state_lock);
-	if (stopped && state != STATE_DIE)
+	if (s->is_stopped && state != STATE_DIE)
 	{
+		pthread_mutex_unlock(&s->state_lock);
 		pthread_mutex_unlock(&s->write_lock);
 		return (STOPPED);
 	}
+	elapsed = get_time_ms() - s->start_time;
 	printf("%ld %d %s\n", elapsed, philo->id, state_message(state));
+	pthread_mutex_unlock(&s->state_lock);
 	pthread_mutex_unlock(&s->write_lock);
 	return (SUCCESS);
 }
