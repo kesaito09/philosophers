@@ -2,53 +2,80 @@
 
 # Philosophers
 
-## **Description**
+## **設計思想（DDD: ドメイン駆動設計 ）**
 
-`Philosophers` is the 42 concurrency project based on the dining philosophers problem.
-The goal is to build a correct, race-free simulation in C while learning how to manage
-threads, processes, mutexes, timing, and termination conditions.
-It also provides a practical way to study deadlocks, starvation, and the trade-offs
-required to coordinate concurrent workers safely.
+本リポジトリは **ドメイン駆動設計（Domain-Driven Design / DDD）** の考え方を採用しています。
+mandatory と bonus はいずれも「食事する哲学者問題」という同一のドメインを扱っており、
+ルール（食事・睡眠・思考・死亡判定・終了条件）は両者で変わりません。
+そこで、ドメインの中核ルールを独立したレイヤーに切り出し、外側のレイヤー
+（プロセス・スレッドなどの並行プリミティブやI/O）を入れ替えるだけで両実装を成立させる構造にしています。
 
-This repository contains two implementations:
+つまり、mandatory と bonus の本質的な違いは「並行性をどう実現するか」だけであり、
+ドメインロジックそのものは共有可能な不変の概念として扱われています。
 
-- `philo/`: mandatory part using POSIX threads and mutexes.
-- `philo_bonus/`: bonus part using processes and semaphores.
+さらに、レイヤー間の結合を疎に保つために **依存性の注入（Dependency Injection / DI）** を用いています。
+domain や application は具体的な同期プリミティブ（ミューテックスやセマフォ）やロギング手段に
+直接依存せず、必要な共有状態・ロック・時刻取得・出力先などを `presentation/` 層で組み立てたうえで
+構造体（コンテキスト）として外側から渡す形をとっています。
+これにより、domain 側のコードを書き換えずに、mandatory（pthread + mutex）と
+bonus（process + semaphore）という異なるインフラ実装へ差し替え可能になっています。
 
-Both programs receive the same rule set:
+ディレクトリは責務（レイヤー）ごとに整理されており、`philo/` と `philo_bonus/` の両方で同じ構造を採っています:
+
+- `presentation/`: エントリポイント、引数のパース、セットアップ、クリーンアップ、依存関係の組み立てと注入
+- `application/`: シミュレーションのフロー、モニタリング、オーケストレーション
+- `domain/`: 哲学者の振る舞いに関するルール（中核ドメイン、外部依存を持たない）
+- `infrastructure/`: 時間、ロギング、同期、低レベル操作（注入される具体実装）
+- `include/`: そのターゲットで共有されるパブリックヘッダ
+
+## **概要**
+
+`Philosophers` は、食事する哲学者問題（Dining Philosophers Problem）をテーマにした
+42 の並行処理に関する課題です。
+C 言語で正しく、レースコンディションのないシミュレーションを構築することを目的としており、
+その過程でスレッド、プロセス、ミューテックス、タイミング制御、終了条件の扱い方を学びます。
+また、デッドロックやスタベーション、並行処理を安全に協調させるために必要なトレードオフを
+実際に手を動かして学ぶ場にもなっています。
+
+本リポジトリには 2 種類の実装が含まれています:
+
+- `philo/`: mandatory パート（POSIX スレッドとミューテックスを使用）
+- `philo_bonus/`: bonus パート（プロセスとセマフォを使用）
+
+どちらのプログラムも同じルールセットを受け取ります:
 
 ```text
 number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
 ```
 
-The simulation stops when a philosopher dies or, if the optional argument is provided,
-when every philosopher has eaten enough times.
+シミュレーションは、哲学者が 1 人でも死亡した時点で停止します。
+オプション引数が指定されている場合は、全員が指定回数以上食事を終えた時点でも停止します。
 
-## **Instructions**
+## **使い方**
 
-### Requirements
+### 必要環境
 
-- A C compiler such as `cc`
-- POSIX thread support
-- A Unix-like environment
+- C コンパイラ（`cc` など）
+- POSIX スレッドのサポート
+- Unix 系の環境
 
-### Build
+### ビルド
 
-Build the mandatory program:
+mandatory プログラムのビルド:
 
 ```bash
 cd philo
 make
 ```
 
-Build the bonus program:
+bonus プログラムのビルド:
 
 ```bash
 cd philo_bonus
 make
 ```
 
-Available Makefile targets in both directories:
+両ディレクトリで利用可能な Makefile ターゲット:
 
 ```bash
 make
@@ -57,62 +84,44 @@ make fclean
 make re
 ```
 
-### Run
+### 実行
 
-Mandatory version:
+mandatory バージョン:
 
 ```bash
 ./philo 5 800 200 200
 ./philo 5 800 200 200 7
 ```
 
-Bonus version:
+bonus バージョン:
 
 ```bash
 ./philo_bonus 5 800 200 200
 ./philo_bonus 5 800 200 200 7
 ```
 
-Argument meaning:
+引数の意味:
 
-- `number_of_philosophers`: number of philosophers and forks
-- `time_to_die`: maximum time in milliseconds a philosopher can stay without eating
-- `time_to_eat`: eating duration in milliseconds
-- `time_to_sleep`: sleeping duration in milliseconds
-- `number_of_times_each_philosopher_must_eat`: optional stop condition
+- `number_of_philosophers`: 哲学者およびフォークの数
+- `time_to_die`: 哲学者が食事をしないでいられる最大時間（ミリ秒）
+- `time_to_eat`: 食事にかかる時間（ミリ秒）
+- `time_to_sleep`: 睡眠にかかる時間（ミリ秒）
+- `number_of_times_each_philosopher_must_eat`: 任意の終了条件（食事回数）
 
-If the input is invalid, the program prints `Error` to standard error and exits.
+入力が不正な場合、プログラムは標準エラー出力に `Error` を出力して終了します。
 
-## Architecture
+## **参考資料**
 
-From an architectural point of view, both parts solve the same domain problem: the
-rules of the philosophers, eating, sleeping, thinking, death detection, and completion
-conditions do not change between mandatory and bonus. Based on that observation, this
-repository adopts an onion architecture approach. The domain layer is isolated around
-the core simulation rules, while the outer layers change only the infrastructure and
-coordination tools used to execute them. In practice, the main difference between the
-two targets is how concurrency primitives are applied, not what the domain logic means.
+このテーマに関連する古典的なリファレンス:
 
-The code is organized by responsibility in both `philo/` and `philo_bonus/`:
+- POSIX スレッド: [`pthread_create(3)`](https://man7.org/linux/man-pages/man3/pthread_create.3.html), [`pthread_mutex_lock(3p)`](https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html)
+- POSIX セマフォ: [`sem_open(3)`](https://man7.org/linux/man-pages/man3/sem_open.3.html), [`sem_wait(3)`](https://man7.org/linux/man-pages/man3/sem_wait.3.html)
+- 食事する哲学者問題の背景: [Wikipedia - 食事する哲学者の問題](https://ja.wikipedia.org/wiki/%E9%A3%9F%E4%BA%8B%E3%81%99%E3%82%8B%E5%93%B2%E5%AD%A6%E8%80%85%E3%81%AE%E5%95%8F%E9%A1%8C)
+- タイミング・プロセス制御: [`gettimeofday(2)`](https://man7.org/linux/man-pages/man2/gettimeofday.2.html), [`fork(2)`](https://man7.org/linux/man-pages/man2/fork.2.html), [`waitpid(2)`](https://man7.org/linux/man-pages/man2/waitpid.2.html)
 
-- `presentation/`: entry point, argument parsing, setup, cleanup
-- `application/`: simulation flow, monitoring, orchestration
-- `domain/`: philosopher behavior rules
-- `infrastructure/`: time, logging, synchronization, low-level operations
-- `include/`: public headers shared by the target
+本リポジトリのドキュメントにおける AI の利用について:
 
-## **Resources**
-
-Classic references related to the topic:
-
-- POSIX threads manual pages: [`pthread_create(3)`](https://man7.org/linux/man-pages/man3/pthread_create.3.html), [`pthread_mutex_lock(3p)`](https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html)
-- POSIX semaphores manual pages: [`sem_open(3)`](https://man7.org/linux/man-pages/man3/sem_open.3.html), [`sem_wait(3)`](https://man7.org/linux/man-pages/man3/sem_wait.3.html)
-- Dining philosophers background: [Wikipedia - Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
-- Timing and process control references: [`gettimeofday(2)`](https://man7.org/linux/man-pages/man2/gettimeofday.2.html), [`fork(2)`](https://man7.org/linux/man-pages/man2/fork.2.html), [`waitpid(2)`](https://man7.org/linux/man-pages/man2/waitpid.2.html)
-
-AI usage for this repository documentation:
-
-- AI was mainly used to support code refactoring and to suggest a directory structure
-  suitable for learning and applying the architecture used in this repository.
-- AI was also used for README wording and organization so that this documentation
-  matches the 42 `Readme Requirements`.
+- AI は主に、コードリファクタリングの補助、および本リポジトリで採用しているアーキテクチャを
+  学習・適用するうえで適したディレクトリ構造の提案に利用しています。
+- README の文言・構成についても、42 の `Readme Requirements` に沿うように
+  AI を活用して整えています。
