@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/27 04:55:39 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/03/06 00:00:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/05/18 15:49:28 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define PHILO_DOMAIN_H
 
 # include <stdbool.h>
-# define SUCCESS 1
-# define FAILURE -1
+# define SUCCESS 0
+# define FAILURE 1
 # define UNSET_MUST_EAT -1
 
 typedef struct s_sim_rule	t_sim_rule;
