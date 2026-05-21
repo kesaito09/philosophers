@@ -2,117 +2,97 @@
 
 # Philosophers
 
-## **Description**
+## Description
 
-`Philosophers` is the 42 concurrency project based on the dining philosophers problem.
-The goal is to build a correct, race-free simulation in C while learning how to manage
-threads, processes, mutexes, timing, and termination conditions.
-It also provides a practical way to study deadlocks, starvation, and the trade-offs
-required to coordinate concurrent workers safely.
+`Philosophers` is a 42 concurrency project based on the classic dining
+philosophers problem. The goal is to learn the basics of threading a process
+by creating threads and using mutexes (mandatory part), and by using processes
+and semaphores (bonus part), while building a race-free simulation in C.
 
-This repository contains two implementations:
+In the simulation, one or more philosophers sit at a round table and
+alternate between **eating**, **thinking**, and **sleeping**. There are as
+many forks as philosophers, and a philosopher must hold both their left and
+right fork to eat. The simulation ends when a philosopher dies of starvation,
+or, if specified, when every philosopher has eaten a given number of times.
 
-- `philo/`: mandatory part using POSIX threads and mutexes.
-- `philo_bonus/`: bonus part using processes and semaphores.
-
-Both programs receive the same rule set:
-
-```text
-number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-```
-
-The simulation stops when a philosopher dies or, if the optional argument is provided,
-when every philosopher has eaten enough times.
-
-## **Instructions**
+## Instructions
 
 ### Requirements
 
-- A C compiler such as `cc`
-- POSIX thread support
+- A C compiler (`cc`) with POSIX thread support
+- GNU `make`
 - A Unix-like environment
 
-### Build
+### Compilation
 
-Build the mandatory program:
+Mandatory part:
 
 ```bash
 cd philo
 make
 ```
 
-Build the bonus program:
+The `Makefile` provides the rules `all`, `clean`, `fclean`, and `re`.
+The program is compiled with `-Wall -Wextra -Werror`.
 
-```bash
-cd philo_bonus
-make
+### Execution
+
+```text
+./philo number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
 ```
 
-Available Makefile targets in both directories:
+| Argument                                    | Unit | Valid range            | Description                                                                                          |
+| ------------------------------------------- | ---- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `number_of_philosophers`                    | —    | `1` … `INT_MAX`        | Number of philosophers and forks                                                                     |
+| `time_to_die`                               | ms   | `1` … `LONG_MAX`       | A philosopher dies if they have not started eating within this time since the start of their last meal |
+| `time_to_eat`                               | ms   | `1` … `LONG_MAX`       | Time it takes for a philosopher to eat (holding two forks)                                           |
+| `time_to_sleep`                             | ms   | `1` … `LONG_MAX`       | Time a philosopher spends sleeping                                                                   |
+| `number_of_times_each_philosopher_must_eat` | —    | `1` … `LONG_MAX` (opt) | (Optional) Stop the simulation once every philosopher has eaten this many times                      |
+|                                             |      |                        |                                                                                                      |
 
-```bash
-make
-make clean
-make fclean
-make re
-```
+#### Behavior when boundaries are exceeded
 
-### Run
+Every argument is validated before the simulation starts. If any of the
+following conditions is met, the program prints `Error` to standard error,
+exits with status `1`, and **never spawns a thread**:
 
-Mandatory version:
+- The number of arguments is not 5 or 6.
+- An argument contains non-digit characters (a leading `+` is accepted, `-` is not — negative values are rejected as non-numeric).
+- An argument is empty or its numeric value overflows `LONG_MAX`.
+- `number_of_philosophers` is `0` or greater than `INT_MAX`.
+- `time_to_die`, `time_to_eat`, or `time_to_sleep` is `0` or negative.
+- `number_of_times_each_philosopher_must_eat`, when supplied, is `0` or negative.
+
+Notes on edge cases inside the valid range:
+
+- `number_of_philosophers = 1`: only one fork is reachable, so the lone philosopher cannot eat and dies after `time_to_die` ms (this is the expected behavior, not an error).
+- Very small `time_to_die` (e.g. `1`): the philosopher dies almost immediately. The subject still requires the death message to be printed within 10 ms of the actual death.
+- Very large values (close to `LONG_MAX`): accepted by the parser, but the simulation runs in real time, so the program will simply run for an unreasonably long duration.
+
+Examples:
 
 ```bash
 ./philo 5 800 200 200
 ./philo 5 800 200 200 7
+./philo 1 800 200 200
+./philo 4 310 200 100
 ```
 
-Bonus version:
+The program prints each state change as `timestamp_in_ms X <state>`, where
+`X` is the philosopher number. The simulation stops on the first death or
+once the optional meal target has been reached.
 
-```bash
-./philo_bonus 5 800 200 200
-./philo_bonus 5 800 200 200 7
-```
-
-Argument meaning:
-
-- `number_of_philosophers`: number of philosophers and forks
-- `time_to_die`: maximum time in milliseconds a philosopher can stay without eating
-- `time_to_eat`: eating duration in milliseconds
-- `time_to_sleep`: sleeping duration in milliseconds
-- `number_of_times_each_philosopher_must_eat`: optional stop condition
-
-If the input is invalid, the program prints `Error` to standard error and exits.
-
-## Architecture
-
-From an architectural point of view, both parts solve the same domain problem: the
-rules of the philosophers, eating, sleeping, thinking, death detection, and completion
-conditions do not change between mandatory and bonus. Based on that observation, this
-repository adopts an onion architecture approach. The domain layer is isolated around
-the core simulation rules, while the outer layers change only the infrastructure and
-coordination tools used to execute them. In practice, the main difference between the
-two targets is how concurrency primitives are applied, not what the domain logic means.
-
-The code is organized by responsibility in both `philo/` and `philo_bonus/`:
-
-- `presentation/`: entry point, argument parsing, setup, cleanup
-- `application/`: simulation flow, monitoring, orchestration
-- `domain/`: philosopher behavior rules
-- `infrastructure/`: time, logging, synchronization, low-level operations
-- `include/`: public headers shared by the target
-
-## **Resources**
+## Resources
 
 Classic references related to the topic:
 
-- POSIX threads manual pages: [`pthread_create(3)`](https://man7.org/linux/man-pages/man3/pthread_create.3.html), [`pthread_mutex_lock(3p)`](https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html)
-- POSIX semaphores manual pages: [`sem_open(3)`](https://man7.org/linux/man-pages/man3/sem_open.3.html), [`sem_wait(3)`](https://man7.org/linux/man-pages/man3/sem_wait.3.html)
-- Dining philosophers background: [Wikipedia - Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
-- Timing and process control references: [`gettimeofday(2)`](https://man7.org/linux/man-pages/man2/gettimeofday.2.html), [`fork(2)`](https://man7.org/linux/man-pages/man2/fork.2.html), [`waitpid(2)`](https://man7.org/linux/man-pages/man2/waitpid.2.html)
+- Dijkstra, *Cooperating Sequential Processes* (1965) — original dining philosophers problem.
+- [Wikipedia — Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
+- POSIX threads — [`pthread_create(3)`](https://man7.org/linux/man-pages/man3/pthread_create.3.html), [`pthread_mutex_lock(3p)`](https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html)
+- POSIX semaphores — [`sem_open(3)`](https://man7.org/linux/man-pages/man3/sem_open.3.html), [`sem_wait(3)`](https://man7.org/linux/man-pages/man3/sem_wait.3.html)
 
-AI usage for this repository documentation:
+### AI usage
 
-- AI was mainly used to support code refactoring and to suggest a directory structure
-  suitable for learning and applying the architecture used in this repository.
-- AI was also used for README wording and organization so that this documentation
-  matches the 42 `Readme Requirements`.
+AI assistance was used for the following tasks only:
+
+- Drafting and proofreading the wording of this `README.md`.
