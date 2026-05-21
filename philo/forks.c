@@ -42,11 +42,6 @@ void	drop_forks(t_philo *philo)
 {
 	if (!philo)
 		return ;
-	if (philo->info->rule.num_of_philo == 1)
-	{
-		pthread_mutex_unlock(philo->left_fork);
-		return ;
-	}
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }

@@ -50,7 +50,7 @@ static int	create_threads(t_info *info)
 	while (i < info->rule.num_of_philo)
 	{
 		if (pthread_create(&info->philos[i].thread, NULL,
-				philo_routine, &info->philos[i]) != 0)
+				philo_routine, &info->philos[i]) != PTHREAD_OK)
 		{
 			stop_simulation(info);
 			j = 0;

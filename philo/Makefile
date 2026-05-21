@@ -18,6 +18,7 @@ CFLAGS		:= -Wall -Wextra -Werror -pthread
 SRCS		:= main.c \
 			   parse.c \
 			   init.c \
+			   init_mutex.c \
 			   forks.c \
 			   simulation.c \
 			   routine.c \
@@ -63,26 +64,18 @@ docker-down:
 #  Race / memory checks                                                        #
 # ---------------------------------------------------------------------------- #
 
-helgrind: $(NAME)
-	valgrind --tool=helgrind \
-	         --error-exitcode=42 \
-	         --history-level=full \
-	         ./$(NAME) $(ARGS)
+# valgrind tools are not available on macOS, so route through the Docker
+# container (see ../docker/run.sh). On Linux you can still invoke valgrind
+# directly with: valgrind --tool=helgrind ./philo $(ARGS)
 
-drd: $(NAME)
-	valgrind --tool=drd \
-	         --error-exitcode=42 \
-	         --exclusive-threshold=10000 \
-	         --joinlist-threshold=10000 \
-	         ./$(NAME) $(ARGS)
+helgrind:
+	cd $(DOCKER_DIR) && ./run.sh helgrind $(ARGS)
 
-memcheck: $(NAME)
-	valgrind --tool=memcheck \
-	         --leak-check=full \
-	         --show-leak-kinds=all \
-	         --track-fds=yes \
-	         --error-exitcode=42 \
-	         ./$(NAME) $(ARGS)
+drd:
+	cd $(DOCKER_DIR) && ./run.sh drd $(ARGS)
+
+memcheck:
+	cd $(DOCKER_DIR) && ./run.sh memcheck $(ARGS)
 
 TSAN_BIN	:= philo_tsan
 TSAN_CC		:= clang

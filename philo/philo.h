@@ -18,6 +18,7 @@
 # include <stddef.h>
 
 # define UNSET_MUST_EAT -1
+# define PTHREAD_OK 0
 
 typedef enum e_status
 {
@@ -85,6 +86,8 @@ int						parse_input(int ac, char **av, t_rule *rule);
 
 int						init_simulation(int ac, char **av, t_info *info);
 void					destroy_simulation(t_info *info);
+int						init_locks(t_info *info);
+void					destroy_all_mutexes(t_info *info);
 
 void					*philo_routine(void *arg);
 int						take_forks(t_philo *philo);

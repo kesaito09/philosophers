@@ -91,7 +91,6 @@ static int	philo_think(t_philo *philo)
 {
 	long	last_meal;
 	long	target;
-	long	now;
 	long	wait;
 	int		status;
 
@@ -102,8 +101,7 @@ static int	philo_think(t_philo *philo)
 	last_meal = philo->meal.last_time;
 	pthread_mutex_unlock(&philo->meal.lock);
 	target = last_meal + 3 * philo->info->rule.time_to_eat;
-	now = get_time_ms();
-	wait = target - now;
+	wait = target - get_time_ms();
 	if (wait <= 0)
 		return (SUCCESS);
 	return (philo_usleep(philo, wait));

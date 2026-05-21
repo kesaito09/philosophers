@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 12:00:00 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/05/17 14:00:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/05/21 17:02:04 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,24 @@ int	monitor_loop(t_info *info)
 
 int	log_action(t_philo *philo, t_state state)
 {
-	t_sim_state	*s;
+	t_sim_state	*sim;
 	long		elapsed;
 
 	if (!philo || !philo->info)
 		return (FAILURE);
-	s = &philo->info->sim;
-	pthread_mutex_lock(&s->write_lock);
-	pthread_mutex_lock(&s->state_lock);
-	if (s->is_stopped && state != STATE_DIE)
+	sim = &philo->info->sim;
+	pthread_mutex_lock(&sim->write_lock);
+	pthread_mutex_lock(&sim->state_lock);
+	if (sim->is_stopped && state != STATE_DIE)
 	{
-		pthread_mutex_unlock(&s->state_lock);
-		pthread_mutex_unlock(&s->write_lock);
+		pthread_mutex_unlock(&sim->state_lock);
+		pthread_mutex_unlock(&sim->write_lock);
 		return (STOPPED);
 	}
-	elapsed = get_time_ms() - s->start_time;
+	elapsed = get_time_ms() - sim->start_time;
 	printf("%ld %d %s\n", elapsed, philo->id, state_message(state));
-	pthread_mutex_unlock(&s->state_lock);
-	pthread_mutex_unlock(&s->write_lock);
+	pthread_mutex_unlock(&sim->state_lock);
+	pthread_mutex_unlock(&sim->write_lock);
 	return (SUCCESS);
 }
 
