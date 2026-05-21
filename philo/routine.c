@@ -6,7 +6,7 @@
 /*   By: kesaitou <kesaitou@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/17 12:00:00 by kesaitou          #+#    #+#             */
-/*   Updated: 2026/05/17 14:00:00 by kesaitou         ###   ########.fr       */
+/*   Updated: 2026/05/21 22:21:58 by kesaitou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static long	initial_delay_ms(int id, int n, long eat)
 
 	if (n == 1)
 		return (0);
-	if (id == n)
+	if (id == n && n % 2 == 1)
 		group = 2;
 	else if (id % 2 == 1)
 		group = 0;
@@ -93,6 +93,7 @@ static int	philo_think(t_philo *philo)
 	long	target;
 	long	wait;
 	int		status;
+	int		n;
 
 	status = log_action(philo, STATE_THINK);
 	if (status != SUCCESS)
@@ -100,7 +101,11 @@ static int	philo_think(t_philo *philo)
 	pthread_mutex_lock(&philo->meal.lock);
 	last_meal = philo->meal.last_time;
 	pthread_mutex_unlock(&philo->meal.lock);
-	target = last_meal + 3 * philo->info->rule.time_to_eat;
+	if (philo->info->rule.num_of_philo % 2 == 0)
+		n = 2;
+	else
+		n = 3;
+	target = last_meal + n * philo->info->rule.time_to_eat;
 	wait = target - get_time_ms();
 	if (wait <= 0)
 		return (SUCCESS);
