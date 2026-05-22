@@ -6,8 +6,7 @@
 
 `Philosophers` is a 42 concurrency project based on the classic dining
 philosophers problem. The goal is to learn the basics of threading a process
-by creating threads and using mutexes (mandatory part), and by using processes
-and semaphores (bonus part), while building a race-free simulation in C.
+by creating threads and using mutexes.
 
 In the simulation, one or more philosophers sit at a round table and
 alternate between **eating**, **thinking**, and **sleeping**. There are as
