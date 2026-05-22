@@ -23,7 +23,8 @@ SRCS		:= main.c \
 			   simulation.c \
 			   routine.c \
 			   monitor.c \
-			   utils.c
+			   utils.c \
+			   safe_pthread.c
 
 OBJS		:= $(SRCS:.c=.o)
 

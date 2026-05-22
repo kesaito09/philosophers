@@ -56,7 +56,7 @@ static int	create_threads(t_info *info)
 			j = 0;
 			while (j < i)
 			{
-				pthread_join(info->philos[j].thread, NULL);
+				safe_thread_join(info->philos[j].thread);
 				j++;
 			}
 			return (FAILURE);
@@ -73,7 +73,7 @@ static void	join_threads(t_info *info)
 	i = 0;
 	while (i < info->rule.num_of_philo)
 	{
-		pthread_join(info->philos[i].thread, NULL);
+		safe_thread_join(info->philos[i].thread);
 		i++;
 	}
 }

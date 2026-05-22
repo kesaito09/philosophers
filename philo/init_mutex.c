@@ -22,7 +22,7 @@ int	init_locks(t_info *info)
 		return (FAILURE);
 	if (pthread_mutex_init(&info->sim.write_lock, NULL) != PTHREAD_OK)
 	{
-		pthread_mutex_destroy(&info->sim.state_lock);
+		safe_mutex_destroy(&info->sim.state_lock);
 		return (FAILURE);
 	}
 	i = 0;
@@ -54,15 +54,15 @@ static void	destroy_n_mutexes(t_info *info, int n_forks, int n_meals)
 	i = 0;
 	while (i < n_forks)
 	{
-		pthread_mutex_destroy(&info->forks[i]);
+		safe_mutex_destroy(&info->forks[i]);
 		i++;
 	}
 	i = 0;
 	while (i < n_meals)
 	{
-		pthread_mutex_destroy(&info->philos[i].meal.lock);
+		safe_mutex_destroy(&info->philos[i].meal.lock);
 		i++;
 	}
-	pthread_mutex_destroy(&info->sim.state_lock);
-	pthread_mutex_destroy(&info->sim.write_lock);
+	safe_mutex_destroy(&info->sim.state_lock);
+	safe_mutex_destroy(&info->sim.write_lock);
 }

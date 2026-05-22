@@ -42,37 +42,40 @@ void	drop_forks(t_philo *philo)
 {
 	if (!philo)
 		return ;
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	safe_unlock(philo->left_fork);
+	safe_unlock(philo->right_fork);
 }
 
 static int	take_fork_single(t_philo *philo)
 {
-	pthread_mutex_lock(philo->left_fork);
+	if (safe_lock(philo->left_fork) != SUCCESS)
+		return (FAILURE);
 	if (log_action(philo, STATE_TAKE_FORK) != SUCCESS)
 	{
-		pthread_mutex_unlock(philo->left_fork);
+		safe_unlock(philo->left_fork);
 		return (STOPPED);
 	}
 	philo_usleep(philo, philo->info->rule.time_to_die);
-	pthread_mutex_unlock(philo->left_fork);
+	safe_unlock(philo->left_fork);
 	return (STOPPED);
 }
 
 static int	take_two_forks(t_philo *philo, pthread_mutex_t *first,
 		pthread_mutex_t *second)
 {
-	pthread_mutex_lock(first);
+	if (safe_lock(first) != SUCCESS)
+		return (FAILURE);
 	if (log_action(philo, STATE_TAKE_FORK) != SUCCESS)
 	{
-		pthread_mutex_unlock(first);
+		safe_unlock(first);
 		return (STOPPED);
 	}
-	pthread_mutex_lock(second);
+	if (safe_lock(second) != SUCCESS)
+		return (safe_unlock(first), FAILURE);
 	if (log_action(philo, STATE_TAKE_FORK) != SUCCESS)
 	{
-		pthread_mutex_unlock(second);
-		pthread_mutex_unlock(first);
+		safe_unlock(second);
+		safe_unlock(first);
 		return (STOPPED);
 	}
 	return (SUCCESS);

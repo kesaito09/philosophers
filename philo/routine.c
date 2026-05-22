@@ -63,9 +63,10 @@ static bool	is_sated(t_philo *philo)
 
 	if (philo->info->rule.num_must_eat == UNSET_MUST_EAT)
 		return (false);
-	pthread_mutex_lock(&philo->meal.lock);
+	if (safe_lock(&philo->meal.lock) != SUCCESS)
+		return (true);
 	sated = (philo->meal.count >= philo->info->rule.num_must_eat);
-	pthread_mutex_unlock(&philo->meal.lock);
+	safe_unlock(&philo->meal.lock);
 	return (sated);
 }
 
@@ -76,10 +77,11 @@ static int	philo_eat(t_philo *philo)
 	status = take_forks(philo);
 	if (status != SUCCESS)
 		return (status);
-	pthread_mutex_lock(&philo->meal.lock);
+	if (safe_lock(&philo->meal.lock) != SUCCESS)
+		return (drop_forks(philo), FAILURE);
 	philo->meal.last_time = get_time_ms();
 	philo->meal.count++;
-	pthread_mutex_unlock(&philo->meal.lock);
+	safe_unlock(&philo->meal.lock);
 	status = log_action(philo, STATE_EAT);
 	if (status == SUCCESS)
 		status = philo_usleep(philo, philo->info->rule.time_to_eat);
@@ -98,9 +100,10 @@ static int	philo_think(t_philo *philo)
 	status = log_action(philo, STATE_THINK);
 	if (status != SUCCESS)
 		return (status);
-	pthread_mutex_lock(&philo->meal.lock);
+	if (safe_lock(&philo->meal.lock) != SUCCESS)
+		return (FAILURE);
 	last_meal = philo->meal.last_time;
-	pthread_mutex_unlock(&philo->meal.lock);
+	safe_unlock(&philo->meal.lock);
 	if (philo->info->rule.num_of_philo % 2 == 0)
 		n = 2;
 	else

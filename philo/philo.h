@@ -103,4 +103,9 @@ void					*ft_calloc(size_t nmemb, size_t size);
 bool					is_stopped(t_info *info);
 void					stop_simulation(t_info *info);
 
+int						safe_lock(pthread_mutex_t *mutex);
+void					safe_unlock(pthread_mutex_t *mutex);
+void					safe_mutex_destroy(pthread_mutex_t *mutex);
+void					safe_thread_join(pthread_t thread);
+
 #endif

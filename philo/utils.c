@@ -21,7 +21,10 @@ long	get_time_ms(void)
 	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL) != 0)
+	{
+		write(2, "Error: gettimeofday\n", 20);
 		return (0);
+	}
 	return ((long)tv.tv_sec * 1000 + (long)tv.tv_usec / 1000);
 }
 
@@ -67,9 +70,10 @@ bool	is_stopped(t_info *info)
 
 	if (!info)
 		return (true);
-	pthread_mutex_lock(&info->sim.state_lock);
+	if (safe_lock(&info->sim.state_lock) != SUCCESS)
+		return (true);
 	flag = info->sim.is_stopped;
-	pthread_mutex_unlock(&info->sim.state_lock);
+	safe_unlock(&info->sim.state_lock);
 	return (flag);
 }
 
@@ -77,7 +81,8 @@ void	stop_simulation(t_info *info)
 {
 	if (!info)
 		return ;
-	pthread_mutex_lock(&info->sim.state_lock);
+	if (safe_lock(&info->sim.state_lock) != SUCCESS)
+		return ;
 	info->sim.is_stopped = true;
-	pthread_mutex_unlock(&info->sim.state_lock);
+	safe_unlock(&info->sim.state_lock);
 }

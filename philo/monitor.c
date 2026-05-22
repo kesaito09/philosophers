@@ -41,18 +41,20 @@ int	log_action(t_philo *philo, t_state state)
 	if (!philo || !philo->info)
 		return (FAILURE);
 	sim = &philo->info->sim;
-	pthread_mutex_lock(&sim->write_lock);
-	pthread_mutex_lock(&sim->state_lock);
+	if (safe_lock(&sim->write_lock) != SUCCESS)
+		return (FAILURE);
+	if (safe_lock(&sim->state_lock) != SUCCESS)
+		return (safe_unlock(&sim->write_lock), FAILURE);
 	if (sim->is_stopped && state != STATE_DIE)
 	{
-		pthread_mutex_unlock(&sim->state_lock);
-		pthread_mutex_unlock(&sim->write_lock);
+		safe_unlock(&sim->state_lock);
+		safe_unlock(&sim->write_lock);
 		return (STOPPED);
 	}
 	elapsed = get_time_ms() - sim->start_time;
 	printf("%ld %d %s\n", elapsed, philo->id, state_message(state));
-	pthread_mutex_unlock(&sim->state_lock);
-	pthread_mutex_unlock(&sim->write_lock);
+	safe_unlock(&sim->state_lock);
+	safe_unlock(&sim->write_lock);
 	return (SUCCESS);
 }
 
@@ -79,9 +81,10 @@ static bool	check_dead(t_info *info)
 	i = 0;
 	while (i < info->rule.num_of_philo)
 	{
-		pthread_mutex_lock(&info->philos[i].meal.lock);
+		if (safe_lock(&info->philos[i].meal.lock) != SUCCESS)
+			return (stop_simulation(info), true);
 		elapsed = get_time_ms() - info->philos[i].meal.last_time;
-		pthread_mutex_unlock(&info->philos[i].meal.lock);
+		safe_unlock(&info->philos[i].meal.lock);
 		if (elapsed >= info->rule.time_to_die)
 		{
 			stop_simulation(info);
@@ -103,9 +106,10 @@ static bool	check_all_sated(t_info *info)
 	i = 0;
 	while (i < info->rule.num_of_philo)
 	{
-		pthread_mutex_lock(&info->philos[i].meal.lock);
+		if (safe_lock(&info->philos[i].meal.lock) != SUCCESS)
+			return (false);
 		count = info->philos[i].meal.count;
-		pthread_mutex_unlock(&info->philos[i].meal.lock);
+		safe_unlock(&info->philos[i].meal.lock);
 		if (count < info->rule.num_must_eat)
 			return (false);
 		i++;
